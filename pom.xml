@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -10,7 +9,7 @@
 
 	<groupId>com.github.ohaddavid</groupId>
 	<artifactId>main.plugins</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>pom</packaging>
 
 	<name>[${project.groupId}:${project.artifactId}:${project.version}]</name>
@@ -46,7 +45,8 @@
 		<connection>scm:git:git@github.com:odavid/maven-plugins.git</connection>
 		<developerConnection>scm:git:git@github.com:odavid/maven-plugins.git</developerConnection>
 		<url>git@github.com:odavid/maven-plugins.git</url>
-	</scm>
+	  <tag>main.plugins-0.1</tag>
+  </scm>
 	<modules>
 		<module>attach-report-maven-plugin</module>
 	</modules>
