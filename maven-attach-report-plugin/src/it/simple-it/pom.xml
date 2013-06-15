@@ -28,7 +28,9 @@
                     <executions>
                         <execution>
                             <id>default</id>
-                            <goals><goal>run</goal></goals>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
                             <phase>generate-sources</phase>
                             <configuration>
                                 <target>
