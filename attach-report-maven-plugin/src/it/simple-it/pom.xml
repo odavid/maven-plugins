@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ohaddavid.it</groupId>
+	<artifactId>simple-it</artifactId>
+	<version>1.0-SNAPSHOT</version>
+
+	<description>A simple IT verifying the basic use case.</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.3</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.7</version>
+					<executions>
+						<execution>
+							<id>default</id>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<phase>generate-sources</phase>
+							<configuration>
+								<target>
+									<mkdir dir="${project.build.directory}/sourcedir"/>
+									<echo file="${project.build.directory}/sourcedir/preconfigured-report.html">THIS IS A REPORT</echo>
+								</target>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>@project.groupId@</groupId>
+				<artifactId>@project.artifactId@</artifactId>
+				<version>@project.version@</version>
+				<reportSets>
+					<reportSet>
+						<id>attach-report</id>
+						<reports>
+							<report>attach-report</report>
+						</reports>
+						<configuration>
+							<name>Foo Report</name>
+							<baseDirectory>foo-report</baseDirectory>
+							<index>preconfigured-report</index>
+							<description>This is the decription</description>
+							<sourceDirectory>${project.build.directory}/sourcedir</sourceDirectory>
+						</configuration>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+</project>
