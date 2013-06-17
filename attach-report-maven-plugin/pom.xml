@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.github.odavid</groupId>
-		<artifactId>main.plugins</artifactId>
-		<version>0.2-SNAPSHOT</version>
+		<artifactId>plugins-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
 	</parent>
 	<groupId>com.github.odavid.maven.plugins</groupId>
 	<artifactId>attach-report-maven-plugin</artifactId>
