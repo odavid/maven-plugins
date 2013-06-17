@@ -46,8 +46,7 @@
 		<connection>scm:git:git@github.com:odavid/maven-plugins.git</connection>
 		<developerConnection>scm:git:git@github.com:odavid/maven-plugins.git</developerConnection>
 		<url>git@github.com:odavid/maven-plugins.git</url>
-	  <tag>HEAD</tag>
-  </scm>
+	</scm>
 	<modules>
 		<module>attach-report-maven-plugin</module>
 	</modules>
