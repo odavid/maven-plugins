@@ -7,7 +7,7 @@
 		<version>7</version>
 	</parent>
 
-	<groupId>com.github.ohaddavid</groupId>
+	<groupId>com.github.odavid</groupId>
 	<artifactId>main.plugins</artifactId>
 	<version>0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>

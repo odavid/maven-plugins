@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.github.ohaddavid</groupId>
+		<groupId>com.github.odavid</groupId>
 		<artifactId>main.plugins</artifactId>
 		<version>0.2-SNAPSHOT</version>
 	</parent>
-	<groupId>com.github.ohaddavid.maven.plugins</groupId>
+	<groupId>com.github.odavid.maven.plugins</groupId>
 	<artifactId>attach-report-maven-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
 	<description>Attach report plugin - a Mojo for attaching reports that were generated outside the site lifecycle</description>
