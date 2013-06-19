@@ -43,7 +43,7 @@ public class AttachReportMojo extends AbstractMavenReport {
 	protected void executeReport(Locale locale) throws MavenReportException {
 		File outDir = new File(getReportOutputDirectory(), this.baseDirectory);
 		try {
-			FileUtils.copyDirectory(sourceDirectory, outDir);
+			FileUtils.copyDirectoryStructure(sourceDirectory, outDir);
 		} catch (IOException e) {
 			throw new MavenReportException("Could not copy " + sourceDirectory + " to " + outDir, e);
 		}

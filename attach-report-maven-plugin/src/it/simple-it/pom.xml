@@ -36,6 +36,8 @@
 								<target>
 									<mkdir dir="${project.build.directory}/sourcedir"/>
 									<echo file="${project.build.directory}/sourcedir/preconfigured-report.html">THIS IS A REPORT</echo>
+									<mkdir dir="${project.build.directory}/sourcedir/ooo"/>
+									<echo file="${project.build.directory}/sourcedir/ooo/test-subdir.txt">THIS IS A SUB DIR</echo>
 								</target>
 							</configuration>
 						</execution>
