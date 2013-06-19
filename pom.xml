@@ -9,7 +9,7 @@
 
 	<groupId>com.github.odavid</groupId>
 	<artifactId>plugins-parent</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1-alpha-2</version>
 	<packaging>pom</packaging>
 
 	<name>[${project.groupId}:${project.artifactId}:${project.version}]</name>
@@ -46,7 +46,7 @@
 		<connection>scm:git:git@github.com:odavid/maven-plugins.git</connection>
 		<developerConnection>scm:git:git@github.com:odavid/maven-plugins.git</developerConnection>
 		<url>git@github.com:odavid/maven-plugins.git</url>
-	  <tag>HEAD</tag>
+	  <tag>plugins-parent-0.1-alpha-2</tag>
   </scm>
 	<modules>
 		<module>attach-report-maven-plugin</module>
