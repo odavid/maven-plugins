@@ -50,6 +50,7 @@
   </scm>
 	<modules>
 		<module>attach-report-maven-plugin</module>
+		<module>maven-logging-extension</module>
 	</modules>
 
 	<dependencyManagement>
