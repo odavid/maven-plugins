@@ -55,6 +55,7 @@
 		<module>maven-ant-tasks</module>
 		<module>ant-maven-logger</module>
 		<module>plexus-ant-factory</module>
+		<module>antrun-maven-plugin</module>
 	</modules>
 
 	<dependencyManagement>
