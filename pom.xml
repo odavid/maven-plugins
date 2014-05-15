@@ -18,8 +18,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
 	</properties>
 
 	<licenses>
@@ -51,6 +51,7 @@
 	<modules>
 		<module>attach-report-maven-plugin</module>
 		<module>maven-logging-extension</module>
+		<module>mojo-descriptor-maven-plugin</module>
 	</modules>
 
 	<dependencyManagement>
@@ -202,7 +203,6 @@
 					<artifactId>maven-plugin-plugin</artifactId>
 					<version>3.2</version>
 					<configuration>
-						<goalPrefix>${project.artifactId}</goalPrefix>
 						<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 					</configuration>
 					<executions>
