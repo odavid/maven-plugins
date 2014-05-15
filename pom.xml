@@ -28,7 +28,7 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
 		</license>
-    </licenses>
+	</licenses>
 
 	<developers>
 		<developer>
@@ -46,13 +46,15 @@
 		<connection>scm:git:git@github.com:odavid/maven-plugins.git</connection>
 		<developerConnection>scm:git:git@github.com:odavid/maven-plugins.git</developerConnection>
 		<url>git@github.com:odavid/maven-plugins.git</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 	<modules>
 		<module>attach-report-maven-plugin</module>
 		<module>maven-logging-extension</module>
-        <module>mojo-descriptor-maven-plugin</module>
-        <module>maven-ant-tasks</module>
+		<module>mojo-descriptor-maven-plugin</module>
+		<module>maven-ant-tasks</module>
+		<module>ant-maven-logger</module>
+		<module>plexus-ant-factory</module>
 	</modules>
 
 	<dependencyManagement>
