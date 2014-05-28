@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -79,7 +81,9 @@ public class ChangeCoordinatesAntTask extends Task {
 				if(targetFile.exists() && !targetFile.canWrite()){
 					targetFile.setWritable(true);
 				}
-				TransformerFactory.newInstance().newTransformer().transform(new DOMSource(document), new StreamResult(targetFile));
+				Transformer transformer = TransformerFactory.newInstance().newTransformer();
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+				transformer.transform(new DOMSource(document), new StreamResult(targetFile));
 			} catch (Exception e) {
 				throw new BuildException("Cannot write file " + targetFile, e);
 			}
