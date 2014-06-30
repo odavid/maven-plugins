@@ -24,23 +24,29 @@ public class UnpackRepoMojo extends AbstractUnpackRepoMojo{
 	
 	@Override
 	public void execute() throws MojoExecutionException {
+		File localUnpackedRepo  = new File(localRepository.getBasedir(), ".unpacked");
+		File markersDir = new File(localUnpackedRepo, ".markers");
 		List<Artifact> artifacts = filterArtifacts();
-		List<Element> artifactItems = new ArrayList<>();
-		for(Artifact artifact: artifacts){
-			artifactItems.add(buildArtifactItem(artifact));
+		if(artifacts.size() > 0){
+			List<Element> artifactItems = new ArrayList<>();
+			for(Artifact artifact: artifacts){
+				artifactItems.add(buildArtifactItem(artifact));
+			}
+			Plugin depPlugin = MojoExecutor.plugin(
+			        groupId("org.apache.maven.plugins"),
+			        artifactId("maven-dependency-plugin"),
+			        version("2.8")
+			);
+			ExecutionEnvironment env = MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager);
+			MojoExecutor.executeMojo(depPlugin, "unpack", 
+					MojoExecutor.configuration(
+							element("markersDirectory", markersDir.getAbsolutePath()),
+							element("artifactItems", 
+									artifactItems.toArray(new Element[artifactItems.size()])))
+									, env);
+		}else{
+			getLog().info("No artifacts matched the filter, skipping execution");
 		}
-		Plugin depPlugin = MojoExecutor.plugin(
-		        groupId("org.apache.maven.plugins"),
-		        artifactId("maven-dependency-plugin"),
-		        version("2.8")
-		);
-		ExecutionEnvironment env = MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager);
-		MojoExecutor.executeMojo(depPlugin, "unpack", 
-				MojoExecutor.configuration(
-						element("markersDirectory", new File(localRepository.getBasedir(), ".unpacked-markers").getAbsolutePath()),
-						element("artifactItems", 
-								artifactItems.toArray(new Element[artifactItems.size()])))
-								, env);
 	}
 
 	private Element buildArtifactItem(Artifact dependency) {

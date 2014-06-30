@@ -80,12 +80,22 @@ public abstract class AbstractUnpackRepoMojo extends AbstractMojo{
 		return artifactItems;
 	}
 	File getUnpackedFilePath(Artifact dependency) {
-		File f = dependency.getFile();
-		String absPath = f.getAbsolutePath();
-		String relPath = absPath.replace(new File(localRepository.getBasedir()).getAbsolutePath(), "");
-		if(relPath.startsWith(File.separator)){
-			relPath = relPath.substring(1);
+		String gid = dependency.getGroupId();
+		String artifactId = dependency.getArtifactId();
+		String version = dependency.getVersion();
+		String classifier = dependency.getClassifier();
+		String type = dependency.getType();
+		
+		gid = gid.replace('.', File.separatorChar);
+		File localUnpackedRepo = new File(localRepository.getBasedir(), ".unpacked");
+		File folder = new File(localUnpackedRepo, gid);
+		folder = new File(folder, version);
+		StringBuilder lastname = new StringBuilder(artifactId).append('-').append(version);
+		if(classifier != null){
+			lastname.append('-').append(classifier);
 		}
-		return new File(new File(localRepository.getBasedir(), ".unpacked"), relPath);
+		lastname.append('.').append(type);
+		folder = new File(folder, lastname.toString());
+		return folder;
 	}
 }

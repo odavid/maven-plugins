@@ -34,25 +34,29 @@ public class UnpackedRepoPathBuilderMojo extends AbstractUnpackRepoMojo{
 			newSuffix = newSuffix.replace('/', File.separatorChar);
 		}
 		List<Artifact> artifacts = filterArtifacts();
-		StringBuilder buffer = new StringBuilder();
-		boolean start = true;
-		for(Artifact artifact: artifacts){
-			String path = getUnpackedFilePath(artifact).getAbsolutePath();
-			if(prefix != null){
-				path = prefix + path;
+		if(artifacts.size() > 0){
+			StringBuilder buffer = new StringBuilder();
+			boolean start = true;
+			for(Artifact artifact: artifacts){
+				String path = getUnpackedFilePath(artifact).getAbsolutePath();
+				if(prefix != null){
+					path = prefix + path;
+				}
+				if(newSuffix != null){
+					path = path + newSuffix;
+				}
+				if(!start){
+					buffer.append(separator);
+				}else{
+					start = false;
+				}
+				buffer.append(path);
 			}
-			if(newSuffix != null){
-				path = path + newSuffix;
-			}
-			if(!start){
-				buffer.append(separator);
-			}else{
-				start = false;
-			}
-			buffer.append(path);
+			mavenProject.getProperties().put(property, buffer.toString());
+			getLog().info("Property:" + property + " = " + buffer.toString());
+		}else{
+			getLog().info("No artifacts matched the filter, skipping execution");
 		}
-		mavenProject.getProperties().put(property, buffer.toString());
-		getLog().info("Property:" + property + " = " + buffer.toString());
 	}
 
 }
