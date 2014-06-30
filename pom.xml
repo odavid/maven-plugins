@@ -235,10 +235,8 @@
 	</build>
 	<repositories>
 		<repository>
-			<repository>
-				<id>atlassian-3rdparty</id>
-				<url>https://maven.atlassian.com/content/repositories/atlassian-3rdparty/</url>
-			</repository>
+			<id>atlassian-3rdparty</id>
+			<url>https://maven.atlassian.com/content/repositories/atlassian-3rdparty/</url>
 		</repository>
 	</repositories>
 </project>
