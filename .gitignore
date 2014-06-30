@@ -6,3 +6,6 @@ target
 *.ear
 .idea
 *.iml
+.settings
+.classpath
+.project
