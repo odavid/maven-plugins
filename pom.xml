@@ -58,6 +58,7 @@
 		<module>antrun-maven-plugin</module>
 		<module>ant-mojos-parent</module>
 		<module>manipulate-pom-maven-plugin</module>
+		<module>unpacked-repository-maven-plugin</module>
 	</modules>
 
 	<dependencyManagement>
