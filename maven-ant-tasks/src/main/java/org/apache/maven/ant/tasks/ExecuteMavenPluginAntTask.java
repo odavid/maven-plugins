@@ -8,8 +8,12 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
+import java.util.List;
+
+import org.apache.maven.model.Plugin;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicConfigurator;
+import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
@@ -38,6 +42,20 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 	@Override
 	public void execute() throws BuildException {
 		try {
+			if(StringUtils.isEmpty(version)){
+				List<Plugin> plugins = getMavenProject().getPluginManagement().getPlugins();
+				for(Plugin plugin: plugins){
+					if(plugin.getArtifactId().equals(artifactId) && plugin.getGroupId().equals(groupId)){
+						version = plugin.getVersion();
+						log("Found plugin version in plugin management - " + groupId +":" + ":"+ artifactId + ":" + version);
+						break;
+					}
+				}
+			}
+			if(StringUtils.isEmpty(version)){
+				String message = "Version for plugin " + groupId +":" + ":"+ artifactId + ", is not specified and not defined in plugin management";
+				throw new BuildException(message);
+			}
 			executeMojo(
 					plugin(groupId(groupId), artifactId(artifactId),
 							version(version)),
