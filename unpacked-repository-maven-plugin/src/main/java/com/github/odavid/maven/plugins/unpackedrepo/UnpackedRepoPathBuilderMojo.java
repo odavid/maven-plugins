@@ -53,9 +53,9 @@ public class UnpackedRepoPathBuilderMojo extends AbstractUnpackRepoMojo{
 				buffer.append(path);
 			}
 			mavenProject.getProperties().put(property, buffer.toString());
-			getLog().info("Property:" + property + " = " + buffer.toString());
+			getLog().debug("Property:" + property + " = " + buffer.toString());
 		}else{
-			getLog().info("No artifacts matched the filter, skipping execution");
+			getLog().debug("No artifacts matched the filter, skipping execution");
 		}
 	}
 

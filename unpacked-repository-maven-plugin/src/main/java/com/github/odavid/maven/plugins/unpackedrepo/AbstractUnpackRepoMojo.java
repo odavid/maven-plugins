@@ -90,7 +90,7 @@ public abstract class AbstractUnpackRepoMojo extends AbstractMojo{
 	File getUnpackedFilePath(Artifact dependency) {
 		String gid = dependency.getGroupId();
 		String artifactId = dependency.getArtifactId();
-		String version = dependency.getVersion();
+		String version = dependency.getBaseVersion();
 		String classifier = dependency.getClassifier();
 		String type = dependency.getType();
 		
