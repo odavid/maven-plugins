@@ -52,19 +52,6 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 		}
 	}
 
-//	@Override
-//	public void setDynamicAttribute(String name, String value) throws BuildException {
-//	}
-
-//	@Override
-//	public Object createDynamicElement(String name) throws BuildException {
-//		if(name.equals("configuration")){
-//			configuration = new Xpp3DomDynamicElement(name);
-//		}else{
-//			throw new BuildException("only configuration element is allowed");
-//		}
-//		return configuration;
-//	}
 	public Xpp3DomDynamicElement createConfiguration(){
 		configuration = new Xpp3DomDynamicElement("configuration");
 		return configuration;
