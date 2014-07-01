@@ -5,7 +5,6 @@ import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
 import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +23,6 @@ public class UnpackRepoMojo extends AbstractUnpackRepoMojo{
 	
 	@Override
 	public void execute() throws MojoExecutionException {
-		File localUnpackedRepo  = new File(localRepository.getBasedir(), ".unpacked");
-		File markersDir = new File(localUnpackedRepo, ".markers");
 		List<Artifact> artifacts = filterArtifacts();
 		if(artifacts.size() > 0){
 			List<Element> artifactItems = new ArrayList<>();
@@ -40,7 +37,7 @@ public class UnpackRepoMojo extends AbstractUnpackRepoMojo{
 			ExecutionEnvironment env = MojoExecutor.executionEnvironment(mavenProject, mavenSession, pluginManager);
 			MojoExecutor.executeMojo(depPlugin, "unpack", 
 					MojoExecutor.configuration(
-							element("markersDirectory", markersDir.getAbsolutePath()),
+							element("markersDirectory", localRepoMarkersDir().getAbsolutePath()),
 							element("artifactItems", 
 									artifactItems.toArray(new Element[artifactItems.size()])))
 									, env);
