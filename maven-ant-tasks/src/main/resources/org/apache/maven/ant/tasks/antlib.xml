@@ -30,4 +30,5 @@ under the License.
   <taskdef name="export-pom-property" classname="org.apache.maven.ant.tasks.ExportMavenProjectProperty"/>
   <taskdef name="unpack-dependencies" classname="org.apache.maven.ant.tasks.UnpackDependenciesAntTask"/>
   <taskdef name="artifact-path" classname="org.apache.maven.ant.tasks.ArtifactPath"/>
+  <taskdef name="execute-maven-plugin" classname="org.apache.maven.ant.tasks.ExecuteMavenPluginAntTask"/>
 </antlib>
