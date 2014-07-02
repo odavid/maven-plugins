@@ -134,6 +134,12 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<preparationGoals>validate</preparationGoals>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
 					<version>1.0</version>
