@@ -81,7 +81,7 @@ public abstract class AbstractUnpackRepoMojo extends AbstractMojo{
 	}
 	
 	File localRepoBaseDir(){
-		return new File(localRepository.getBasedir(), ".unpacked");
+		return new File(localRepository.getBasedir(), ".unpck");
 	}
 	File localRepoMarkersDir(){
 		return new File(localRepoBaseDir(), ".markers");
@@ -97,7 +97,6 @@ public abstract class AbstractUnpackRepoMojo extends AbstractMojo{
 		gid = gid.replace('.', File.separatorChar);
 		File localUnpackedRepo = localRepoBaseDir();
 		File folder = new File(localUnpackedRepo, gid);
-		folder = new File(folder, version);
 		StringBuilder lastname = new StringBuilder(artifactId).append('-').append(version);
 		if(classifier != null){
 			lastname.append('-').append(classifier);
