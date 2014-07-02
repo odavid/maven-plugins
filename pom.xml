@@ -134,13 +134,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.4</version>
-					<configuration>
-						<preparationGoals>validate</preparationGoals>
-					</configuration>
-				</plugin>
-				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
 					<version>1.0</version>
@@ -187,7 +180,7 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<preparationGoals>verify</preparationGoals>
+						<preparationGoals>validate</preparationGoals>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 					</configuration>
 				</plugin>
