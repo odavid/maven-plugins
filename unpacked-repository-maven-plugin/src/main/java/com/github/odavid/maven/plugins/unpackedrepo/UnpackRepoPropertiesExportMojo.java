@@ -22,6 +22,9 @@ public class UnpackRepoPropertiesExportMojo extends AbstractUnpackRepoMojo{
 		mavenProject.getProperties().setProperty(prefix + "markersdir", localRepoMarkersDir().getAbsolutePath());
 		for(Artifact artifact: artifacts){
 			mavenProject.getProperties().setProperty(prefix + artifact.getDependencyConflictId(), this.getUnpackedFilePath(artifact).getAbsolutePath());
+            if(createSymlinks){
+                mavenProject.getProperties().setProperty(prefix + artifact.getDependencyConflictId() + ".symlink", this.getSymlinkDir(artifact).getAbsolutePath());
+            }
 		}
 	}
 

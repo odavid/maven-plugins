@@ -20,89 +20,112 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectHelper;
 
-public abstract class AbstractUnpackRepoMojo extends AbstractMojo{
-	@Component
-	MavenProject mavenProject;
+public abstract class AbstractUnpackRepoMojo extends AbstractMojo {
+    @Component
+    MavenProject mavenProject;
 
-	@Component
-	MavenProjectHelper projectHelper;
+    @Component
+    MavenProjectHelper projectHelper;
 
-	@Parameter(defaultValue = "${localRepository}")
-	ArtifactRepository localRepository;
+    @Parameter(defaultValue = "${localRepository}")
+    ArtifactRepository localRepository;
 
-	@Component
-	BuildPluginManager pluginManager;
-	
-	@Component
-	MavenSession mavenSession;
-	
-	@Parameter(property="unpack.dep.type")
-	String type;
-	
-	@Parameter(property="unpack.dep.classifier")
-	String classifier;
-	
-	@Parameter
-	List<String> includeArtifacts;
-	
-	@Parameter
-	List<String> excludeArtifacts;
+    @Component
+    BuildPluginManager pluginManager;
 
-	List<Artifact> filterArtifacts(){
-		AndArtifactFilter filter = new AndArtifactFilter();
-		if(type != null){
-			filter.add(new TypeArtifactFilter(type));
-		}
-		if(classifier != null){
-			filter.add(new ArtifactFilter(){
-				@Override
-				public boolean include(Artifact artifact) {
-					return artifact.getClassifier().equals(classifier);
-				}
-			});
-		}
-		if(includeArtifacts != null && includeArtifacts.size() > 0){
-			filter.add(new IncludesArtifactFilter(includeArtifacts));
-		}
-		if(excludeArtifacts != null && excludeArtifacts.size() > 0){
-			filter.add(new ExcludesArtifactFilter(excludeArtifacts));
-		}
-		
-		@SuppressWarnings("unchecked")
-		Set<Artifact> deps = mavenProject.getArtifacts();
-		
-		List<Artifact> artifactItems = new ArrayList<>(); 
-		for(Artifact dependency: deps){
-			if(filter.include(dependency)){
-				artifactItems.add(dependency);
-			}
-		}
-		return artifactItems;
-	}
-	
-	File localRepoBaseDir(){
-		return new File(localRepository.getBasedir(), ".unpck");
-	}
-	File localRepoMarkersDir(){
-		return new File(localRepoBaseDir(), ".markers");
-	}
+    @Component
+    MavenSession mavenSession;
 
-	File getUnpackedFilePath(Artifact dependency) {
-		String gid = dependency.getGroupId();
-		String artifactId = dependency.getArtifactId();
-		String version = dependency.getBaseVersion();
-		String classifier = dependency.getClassifier();
-		String type = dependency.getType();
-		
-		gid = gid.replace('.', File.separatorChar);
-		File localUnpackedRepo = localRepoBaseDir();
-		File folder = new File(localUnpackedRepo, gid);
-		StringBuilder lastname = new StringBuilder(artifactId).append('-').append(version);
-		if(classifier != null){
-			lastname.append('-').append(classifier);
-		}
-		lastname.append('.').append(type);
-		folder = new File(folder, lastname.toString());
-		return folder;
-	}
+    @Parameter(property = "unpack.dep.type")
+    String type;
+
+    @Parameter(property = "unpack.dep.classifier")
+    String classifier;
+
+    @Parameter
+    List<String> includeArtifacts;
+
+    @Parameter
+    List<String> excludeArtifacts;
+
+    @Parameter
+    boolean createSymlinks;
+
+    @Parameter(defaultValue = "@groupId@-@artifactId@-@version@@dashClassifier@-@type@")
+    String symlinkNameMapping;
+
+    @Parameter(defaultValue = "${project.build.directory}")
+    File symlinkRootDir;
+
+    List<Artifact> filterArtifacts() {
+        AndArtifactFilter filter = new AndArtifactFilter();
+        if (type != null) {
+            filter.add(new TypeArtifactFilter(type));
+        }
+        if (classifier != null) {
+            filter.add(new ArtifactFilter() {
+                @Override
+                public boolean include(Artifact artifact) {
+                    return artifact.getClassifier().equals(classifier);
+                }
+            });
+        }
+        if (includeArtifacts != null && includeArtifacts.size() > 0) {
+            filter.add(new IncludesArtifactFilter(includeArtifacts));
+        }
+        if (excludeArtifacts != null && excludeArtifacts.size() > 0) {
+            filter.add(new ExcludesArtifactFilter(excludeArtifacts));
+        }
+
+        @SuppressWarnings("unchecked")
+        Set<Artifact> deps = mavenProject.getArtifacts();
+
+        List<Artifact> artifactItems = new ArrayList<>();
+        for (Artifact dependency : deps) {
+            if (filter.include(dependency)) {
+                artifactItems.add(dependency);
+            }
+        }
+        return artifactItems;
+    }
+
+    File localRepoBaseDir() {
+        return new File(localRepository.getBasedir(), ".unpck");
+    }
+
+    File localRepoMarkersDir() {
+        return new File(localRepoBaseDir(), ".markers");
+    }
+
+    File getUnpackedFilePath(Artifact dependency) {
+        String gid = dependency.getGroupId();
+        String artifactId = dependency.getArtifactId();
+        String version = dependency.getBaseVersion();
+        String classifier = dependency.getClassifier();
+        String type = dependency.getType();
+
+        gid = gid.replace('.', File.separatorChar);
+        File localUnpackedRepo = localRepoBaseDir();
+        File folder = new File(localUnpackedRepo, gid);
+        StringBuilder lastname = new StringBuilder(artifactId).append('-').append(version);
+        if (classifier != null) {
+            lastname.append('-').append(classifier);
+        }
+        lastname.append('.').append(type);
+        folder = new File(folder, lastname.toString());
+        return folder;
+    }
+
+    File getSymlinkDir(Artifact dependency) {
+        return new File(symlinkRootDir, mapName(dependency));
+    }
+
+    String mapName(Artifact dependency) {
+        String name = symlinkNameMapping.replace("@artifactId@", dependency.getArtifactId()).
+                replace("@groupId@", dependency.getGroupId()).
+                replace("@type@", dependency.getType()).
+                replace("@version@", dependency.getBaseVersion()).
+                replace("@dashClassifier@", dependency.getClassifier() != null ? "-" + dependency.getClassifier(): "");
+        return name;
+    }
 }

@@ -38,7 +38,7 @@ public class UnpackedRepoPathBuilderMojo extends AbstractUnpackRepoMojo{
 			StringBuilder buffer = new StringBuilder();
 			boolean start = true;
 			for(Artifact artifact: artifacts){
-				String path = getUnpackedFilePath(artifact).getAbsolutePath();
+				String path = createSymlinks ? getSymlinkDir(artifact).getAbsolutePath() : getUnpackedFilePath(artifact).getAbsolutePath();
 				if(prefix != null){
 					path = prefix + path;
 				}
