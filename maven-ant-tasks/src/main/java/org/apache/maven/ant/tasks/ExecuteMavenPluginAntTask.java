@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.maven.model.Plugin;
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DynamicConfigurator;
+import org.apache.tools.ant.DynamicConfiguratorNS;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -80,28 +80,34 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 	
 
 	
-	public static class Xpp3DomDynamicElement implements DynamicConfigurator{
+	public static class Xpp3DomDynamicElement implements DynamicConfiguratorNS{
 		private Xpp3Dom element;
 		
 		public Xpp3DomDynamicElement(String name){
 			this.element = new Xpp3Dom(name);
 		}
 		
+		
 		@Override
-		public void setDynamicAttribute(String name, String value)
-				throws BuildException {
-			this.element.setAttribute(name, value);
+		public void setDynamicAttribute(String uri, String localName,
+				String qName, String value) throws BuildException {
+			this.element.setAttribute(localName, value);
 		}
+
+
+		@Override
+		public Object createDynamicElement(String uri, String localName,
+				String qName) throws BuildException {
+			Xpp3DomDynamicElement child = new Xpp3DomDynamicElement(localName);
+			element.addChild(child.getElement());
+			return child;
+		}
+
+
 		public Xpp3Dom getElement(){
 			return element;
 		}
 
-		@Override
-		public Object createDynamicElement(String name) throws BuildException {
-			Xpp3DomDynamicElement child = new Xpp3DomDynamicElement(name);
-			element.addChild(child.getElement());
-			return child;
-		}
 		public void addText(String text) throws BuildException{
 			this.element.setValue(text);
 		}
