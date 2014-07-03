@@ -13,6 +13,8 @@ import java.util.List;
 import org.apache.maven.model.Plugin;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DynamicConfiguratorNS;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.PropertyHelper;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -71,7 +73,7 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 	}
 
 	public Xpp3DomDynamicElement createConfiguration(){
-		configuration = new Xpp3DomDynamicElement("configuration");
+		configuration = new Xpp3DomDynamicElement(getProject(), "configuration");
 		return configuration;
 	}
 	public void addConfiguration(Xpp3DomDynamicElement configuation){
@@ -82,8 +84,10 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 	
 	public static class Xpp3DomDynamicElement implements DynamicConfiguratorNS{
 		private Xpp3Dom element;
+		private Project antProject;
 		
-		public Xpp3DomDynamicElement(String name){
+		public Xpp3DomDynamicElement(Project antProject, String name){
+			this.antProject = antProject;
 			this.element = new Xpp3Dom(name);
 		}
 		
@@ -98,7 +102,7 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 		@Override
 		public Object createDynamicElement(String uri, String localName,
 				String qName) throws BuildException {
-			Xpp3DomDynamicElement child = new Xpp3DomDynamicElement(localName);
+			Xpp3DomDynamicElement child = new Xpp3DomDynamicElement(antProject, localName);
 			element.addChild(child.getElement());
 			return child;
 		}
@@ -109,6 +113,8 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 		}
 
 		public void addText(String text) throws BuildException{
+			PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(antProject);
+			text = propertyHelper.replaceProperties(text);
 			this.element.setValue(text);
 		}
 	}
