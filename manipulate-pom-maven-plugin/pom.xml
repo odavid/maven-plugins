@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.github.odavid.maven.plugins</groupId>
 		<artifactId>ant-mojos-parent</artifactId>
-		<version>0.1-alpha-8-SNAPSHOT</version>
+		<version>0.1-alpha-8</version>
 		<relativePath>../ant-mojos-parent</relativePath>
 	</parent>
 	<artifactId>manipulate-pom-maven-plugin</artifactId>
