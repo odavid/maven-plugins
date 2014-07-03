@@ -56,7 +56,7 @@ import com.github.odavid.maven.ant.logger.MavenAntLogger;
 
 /**
  * Maven AntRun Mojo.
- * <br/>
+ * <br>
  * This plugin provides the capability of calling Ant tasks
  * from a POM by running the nested ant tasks inside the &lt;tasks/&gt;
  * parameter. It is encouraged to move the actual tasks to

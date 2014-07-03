@@ -1,9 +1,0 @@
-<mojos>
-	<mojo name="change-coordinates" phase="initialize">
-		<paramater name="workspaceDir" defaultValue="${project.basedir}" expression="${workspaceDir}"/>
-		<paramater name="excludes" expression="${excludes}"/>
-		<paramater name="from" required="true" expression="${from}"/>
-		<paramater name="to" required="true" expression="${to}"/>
-		<paramater name="backupBefore" defaultValue="false" expression="${backupBefore}"/>
-	</mojo>
-</mojos>

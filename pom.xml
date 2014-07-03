@@ -57,7 +57,6 @@
 		<module>plexus-ant-factory</module>
 		<module>antrun-maven-plugin</module>
 		<module>ant-mojos-parent</module>
-		<module>manipulate-pom-maven-plugin</module>
 		<module>unpacked-repository-maven-plugin</module>
 	</modules>
 
@@ -165,6 +164,15 @@
 				<plugin>
 					<artifactId>maven-javadoc-plugin</artifactId>
 					<version>2.9</version>
+                    <configuration>
+                        <tagletArtifacts>
+                            <tagletArtifact>
+                                <groupId>org.apache.maven.plugin-tools</groupId>
+                                <artifactId>maven-plugin-tools-javadoc</artifactId>
+                                <version>3.3</version>
+                            </tagletArtifact>
+                        </tagletArtifacts>
+                    </configuration>
 				</plugin>
 				<plugin>
 					<artifactId>maven-deploy-plugin</artifactId>
