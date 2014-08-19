@@ -189,7 +189,7 @@
 					<artifactId>maven-release-plugin</artifactId>
 					<version>2.4</version>
 					<configuration>
-						<preparationGoals>verify</preparationGoals>
+						<preparationGoals>clean:clean</preparationGoals>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 					</configuration>
 				</plugin>
