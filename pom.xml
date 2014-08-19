@@ -58,6 +58,7 @@
 		<module>antrun-maven-plugin</module>
 		<module>ant-mojos-parent</module>
 		<module>unpacked-repository-maven-plugin</module>
+		<module>mixin-maven-plugin</module>
 	</modules>
 
 	<dependencyManagement>
