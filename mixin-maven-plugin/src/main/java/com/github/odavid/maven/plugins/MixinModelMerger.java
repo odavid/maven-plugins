@@ -29,7 +29,7 @@ public class MixinModelMerger extends MavenModelMerger {
 			}
 			PluginContainer sourceContainer = source.getBuild().getPluginManagement();
 			PluginContainer targetContainer = target.getBuild().getPluginManagement();
-			mergePluginContainers(targetContainer, sourceContainer, context);
+			mergePluginContainers(targetContainer, sourceContainer, context, true);
 		}
 	}
 
@@ -41,7 +41,8 @@ public class MixinModelMerger extends MavenModelMerger {
 			}
 			PluginContainer sourceContainer = source.getBuild();
 			PluginContainer targetContainer = target.getBuild();
-			mergePluginContainers(targetContainer, sourceContainer, context);
+			mergePluginContainers(targetContainer, sourceContainer, context, true);
+			mergePluginContainers(targetContainer, target.getBuild().getPluginManagement(), context, false);
 		}
 	}
 	
@@ -58,12 +59,14 @@ public class MixinModelMerger extends MavenModelMerger {
 	 * @param sourcePlugin
 	 * @param context
 	 */
-	private void mergePluginContainers(PluginContainer targetContainer, PluginContainer sourceContainer, Map<Object, Object> context){
+	private void mergePluginContainers(PluginContainer targetContainer, PluginContainer sourceContainer, Map<Object, Object> context, boolean addTargetPlugin){
 		List<Plugin> plugins = sourceContainer.getPlugins();
 		for (Plugin sourcePlugin : plugins) {
 			Plugin targetPlugin = targetContainer.getPluginsAsMap().get(sourcePlugin.getKey());
 			if(targetPlugin == null){
-				targetContainer.getPlugins().add(sourcePlugin);
+				if(addTargetPlugin){
+					targetContainer.getPlugins().add(sourcePlugin);
+				}
 			}else{
 				for(PluginExecution sourceExecution : sourcePlugin.getExecutions()){
 					PluginExecution targetPluginExecution = targetPlugin.getExecutionsAsMap().get(sourceExecution.getId());

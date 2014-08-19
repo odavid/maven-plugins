@@ -37,20 +37,17 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
 	@Override
 	public void afterSessionStart(MavenSession session) throws MavenExecutionException {
+		logger.info("afterSessionStart");
 	}
 
 	@Override
 	public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
-		final MavenProject topLevelProject = mavenSession.getTopLevelProject();
-		List<String> modules = topLevelProject.getModules();
-		mergeMixins(topLevelProject, mavenSession);
-		if (modules != null && modules.size() > 0) {
-			for (MavenProject module : mavenSession.getProjects()) {
-				if (topLevelProject != module) {
-					mergeMixins(module, mavenSession);
-				}
-			}
+		logger.info("afterProjectsRead");
+		List<MavenProject> projects = mavenSession.getProjects();
+		for (MavenProject module : projects ) {
+			mergeMixins(module, mavenSession);
 		}
+		mavenSession.setProjects(projects);
 	}
 
 	private void mergeMixins(MavenProject currentProject, MavenSession mavenSession) throws MavenExecutionException {
