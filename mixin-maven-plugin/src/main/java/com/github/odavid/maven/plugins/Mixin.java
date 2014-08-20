@@ -34,7 +34,7 @@ public class Mixin {
 	private Mixins mixins;
 
 	private Artifact artifact;
-	
+
 	public void setMixins(Mixins mixins){
 		this.mixins = mixins;
 	}

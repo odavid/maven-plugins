@@ -7,6 +7,7 @@
 	</parent>
 	<groupId>com.github.odavid.maven.plugins</groupId>
 	<artifactId>mixin-maven-plugin</artifactId>
+	<packaging>maven-plugin</packaging>
 	<name>${project.groupId}:${project.artifactId}</name>
 
 	<properties>
