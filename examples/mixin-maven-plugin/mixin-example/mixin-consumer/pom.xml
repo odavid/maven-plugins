@@ -1,0 +1,56 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>test-mixin</groupId>
+		<artifactId>base-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<groupId>test-mixin</groupId>
+	<artifactId>mixin-consumer</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<properties>
+		<!-- Use version property for the mixin as best practice -->
+		<version.mixin>${project.version}</version.mixin>
+
+		<!-- Overide the message from mixin. By default the mixin properties will be injected to this pom, and could be overriden -->
+		<!--
+		<message>HELLO MIXIN COSUMER MESSAGE</message>
+		-->
+	</properties>
+	<build>
+		<plugins>
+			<!-- This extension declaration enables you to consume more than one mixin within your pom. Add more mixins to the configuration element. Mixins are being injected by their order in the configuration -->
+			<plugin>
+				<groupId>com.github.odavid.maven.plugins</groupId>
+				<artifactId>mixin-maven-plugin</artifactId>
+				<!-- It is a maven extension!!! -->
+				<extensions>true</extensions>
+				<configuration>
+					<mixins>
+						<!-- I want to include this mixin (type is always pom) -->
+						<mixin>
+							<groupId>test-mixin</groupId>
+							<artifactId>mixin1</artifactId>
+							<version>${version.mixin}</version>
+						</mixin>
+						<mixin>
+							<groupId>test-mixin</groupId>
+							<artifactId>mixin2</artifactId>
+							<version>${version.mixin}</version>
+						</mixin>
+					</mixins>
+				</configuration>
+			</plugin>
+			
+			<!-- Since we did not define the plugin within the mixin (only the pluginManagement section), then we state here which plugins will be executed
+				We can always add configuration/executions to the plugins and it will be merged with the parent pom and the mixins we declared earlier.
+			-->
+			<plugin>
+				<groupId>com.github.odavid.maven.plugins</groupId>
+				<artifactId>antrun-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

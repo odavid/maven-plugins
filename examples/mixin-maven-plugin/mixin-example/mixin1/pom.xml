@@ -1,0 +1,44 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>test-mixin</groupId>
+		<artifactId>base-parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>mixin1</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>${project.groupId}:${project.artifactId}</name>
+	<properties>
+		<message>HELLO DEFAULT MESSAGE FROM MIXIN</message>
+	</properties>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!-- This is a simple execution of antrun during initialize phase to echo a message from a property. 
+				Mixin consumers can change the message by overriding the message property 
+				
+				In my opinion it is better not to use build/plugins section within a mixin, even though mixin-maven-plugin supports also merging the plugins section within the mixin consumer	
+				-->
+				<plugin>
+					<groupId>com.github.odavid.maven.plugins</groupId>
+					<artifactId>antrun-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>echo-message</id>
+							<phase>initialize</phase>
+							<goals>
+								<goal>run</goal>
+							</goals>
+							<configuration>
+								<target>
+									<echo>We are now in initialize phase, running mixin1 with message: ${message}</echo>
+								</target>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
