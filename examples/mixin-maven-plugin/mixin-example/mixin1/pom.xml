@@ -18,7 +18,8 @@
 				<!-- This is a simple execution of antrun during initialize phase to echo a message from a property. 
 				Mixin consumers can change the message by overriding the message property 
 				
-				In my opinion it is better not to use build/plugins section within a mixin, even though mixin-maven-plugin supports also merging the plugins section within the mixin consumer	
+				In my opinion it is better not to use build/plugins section within a mixin, 
+				although mixin-maven-plugin supports also merging the plugins section within the mixin consumer	
 				-->
 				<plugin>
 					<groupId>com.github.odavid.maven.plugins</groupId>
