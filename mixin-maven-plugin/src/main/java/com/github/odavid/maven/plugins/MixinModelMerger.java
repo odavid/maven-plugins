@@ -69,7 +69,14 @@ public class MixinModelMerger extends MavenModelMerger {
 				}
 			}else{
 				for(PluginExecution sourceExecution : sourcePlugin.getExecutions()){
-					PluginExecution targetPluginExecution = targetPlugin.getExecutionsAsMap().get(sourceExecution.getId());
+					String executionId = sourceExecution.getId();
+					PluginExecution targetPluginExecution = null;
+					for(PluginExecution targetExecution: targetPlugin.getExecutions()){
+						if(targetExecution.getId() != null && targetExecution.getId().equals(executionId)){
+							targetPluginExecution = targetExecution;
+							break;
+						}
+					}
 					if(targetPluginExecution == null){
 						targetPlugin.addExecution(sourceExecution);
 					}else{
