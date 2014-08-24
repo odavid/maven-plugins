@@ -96,6 +96,7 @@ public class Mixin {
 			if(isMergePlugins()){
 				mixinModelMerger.mergePlugins(mavenProject.getModel(), mixinModel);
 			}
+			
 		} catch (FileNotFoundException e) {
 			throw new MavenExecutionException (String.format("Cannot find mixin file %s for mixin artifact %s ", artifactFile, artifact) , e);
 		} catch (IOException e) {

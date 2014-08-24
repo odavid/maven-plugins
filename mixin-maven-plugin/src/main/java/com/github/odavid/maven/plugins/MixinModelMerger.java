@@ -30,7 +30,13 @@ public class MixinModelMerger extends MavenModelMerger {
 			PluginContainer sourceContainer = source.getBuild().getPluginManagement();
 			PluginContainer targetContainer = target.getBuild().getPluginManagement();
 			mergePluginContainers(targetContainer, sourceContainer, context, true);
+
 		}
+	}
+	
+	public void applyPluginManagementOnPlugins(Model model){
+		Map<Object, Object> context = new HashMap<Object, Object>();
+		mergePluginContainers(model.getBuild(), model.getBuild().getPluginManagement(), context, false);
 	}
 
 	public void mergePlugins(Model target, Model source){
@@ -42,7 +48,6 @@ public class MixinModelMerger extends MavenModelMerger {
 			PluginContainer sourceContainer = source.getBuild();
 			PluginContainer targetContainer = target.getBuild();
 			mergePluginContainers(targetContainer, sourceContainer, context, true);
-			mergePluginContainers(targetContainer, target.getBuild().getPluginManagement(), context, false);
 		}
 	}
 	
@@ -62,10 +67,17 @@ public class MixinModelMerger extends MavenModelMerger {
 	private void mergePluginContainers(PluginContainer targetContainer, PluginContainer sourceContainer, Map<Object, Object> context, boolean addTargetPlugin){
 		List<Plugin> plugins = sourceContainer.getPlugins();
 		for (Plugin sourcePlugin : plugins) {
-			Plugin targetPlugin = targetContainer.getPluginsAsMap().get(sourcePlugin.getKey());
+			String key = sourcePlugin.getKey();
+			Plugin targetPlugin = null;
+			for(Plugin targetPluginElement: targetContainer.getPlugins()){
+				if(targetPluginElement.getKey() != null && targetPluginElement.getKey().equals(key)){
+					targetPlugin = targetPluginElement;
+					break;
+				}
+			}
 			if(targetPlugin == null){
 				if(addTargetPlugin){
-					targetContainer.getPlugins().add(sourcePlugin);
+					targetContainer.getPlugins().add(sourcePlugin.clone());
 				}
 			}else{
 				for(PluginExecution sourceExecution : sourcePlugin.getExecutions()){
@@ -78,16 +90,17 @@ public class MixinModelMerger extends MavenModelMerger {
 						}
 					}
 					if(targetPluginExecution == null){
-						targetPlugin.addExecution(sourceExecution);
+						targetPlugin.addExecution(sourceExecution.clone());
 					}else{
 						super.mergePluginExecution(targetPluginExecution, sourceExecution, false, context);
 					}
 				}
-				if(targetPlugin.getConfiguration() == null){
-					targetPlugin.setConfiguration(sourcePlugin.getConfiguration());
-				}else{
-					super.mergePlugin(targetPlugin, sourcePlugin, false, context);
-				}
+		        mergeConfigurationContainer( targetPlugin, sourcePlugin, false, context);
+		        mergePlugin_GroupId( targetPlugin, sourcePlugin, false, context);
+		        mergePlugin_ArtifactId( targetPlugin, sourcePlugin, false, context);
+		        mergePlugin_Version( targetPlugin, sourcePlugin, false, context);
+		        mergePlugin_Extensions( targetPlugin, sourcePlugin, false, context );
+		        mergePlugin_Dependencies( targetPlugin, sourcePlugin, false, context);
 			}
 		}
 	}

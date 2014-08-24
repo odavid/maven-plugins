@@ -70,6 +70,9 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 					mixin.merge(currentProject, mavenSession, plugin, mixinModelMerger, mavenXpp3reader, repositorySystem);
 				}
 				if(mixins.getMixins().size() > 0){
+					//Apply the pluginManagement section on the plugins section
+					mixinModelMerger.applyPluginManagementOnPlugins(currentProject.getModel());
+
 					ProjectBuildingRequest projectBuildingRequest = mavenSession.getProjectBuildingRequest();
 					DefaultModelBuildingRequest request = new DefaultModelBuildingRequest();
 					request.setActiveProfileIds(projectBuildingRequest.getActiveProfileIds());
