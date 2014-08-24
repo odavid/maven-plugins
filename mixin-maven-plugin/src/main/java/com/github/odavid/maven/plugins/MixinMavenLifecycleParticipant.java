@@ -45,6 +45,8 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private PluginConfigurationExpander pluginConfigurationExpander;
     
+    private MixinModelCache mixinModelCache = new MixinModelCache();
+    
 	@Override
 	public void afterSessionStart(MavenSession session) throws MavenExecutionException {
 	}
@@ -67,7 +69,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 				logger.info(String.format("%s: Processing Mixins for %s", PLUGIN_ARTIFACTID, currentProject.getFile()));
 				Mixins mixins = loadConfiguration(plugin.getConfiguration());
 				for(Mixin mixin: mixins.getMixins()){
-					mixin.merge(currentProject, mavenSession, plugin, mixinModelMerger, mavenXpp3reader, repositorySystem);
+					mixin.merge(mixinModelCache, currentProject, mavenSession, plugin, mixinModelMerger, mavenXpp3reader, repositorySystem);
 				}
 				if(mixins.getMixins().size() > 0){
 					//Apply the pluginManagement section on the plugins section
