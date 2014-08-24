@@ -16,7 +16,7 @@ An example for a mixin pom can be found in [mixin example pom](../../../blob/mas
 Next step would be to consume this mixin in your consumer pom.
 An example for a mixin consumer can be found in [mixin consumer example pom](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin-consumer/pom.xml)
 
-The full example (including a base parent pom) can be downloaded from [mixin consumer example pom](../../../tre/master/examples/mixin-maven-plugin/mixin-example/)
+The full example (including a base parent pom) can be downloaded from [mixin-example](../../../tree/master/examples/mixin-maven-plugin/mixin-example/)
 
 ## Notes
 Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
