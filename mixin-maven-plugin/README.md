@@ -1,4 +1,4 @@
-# Maven Mixin Plugin
+# Mixin Maven Plugin
 
 ## Introduction
 
