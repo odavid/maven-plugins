@@ -11,12 +11,12 @@ A Mixin is a regular pom file that concentrate only on a single build aspect of 
 
 ## Usage
 In order to use this plugin, you first need to create a mixin pom or use an existing one.
-An example for a mixin pom can be found in [mixin example pom](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin1/pom.xml)
+An example for a mixin pom can be found in [here](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin1/pom.xml)
 
 Next step would be to consume this mixin in your consumer pom.
-An example for a mixin consumer can be found in [mixin consumer example pom](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin-consumer/pom.xml)
+An example for a mixin consumer can be found in [here](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin-consumer/pom.xml)
 
-The full example (including a base parent pom) can be downloaded from [mixin-example](../../../tree/master/examples/mixin-maven-plugin/mixin-example/)
+The full example (including a base parent pom) can be downloaded from [here](../../../tree/master/examples/mixin-maven-plugin/mixin-example/)
 
 ## Notes
 Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
