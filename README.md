@@ -1,6 +1,6 @@
 # maven-plugins
 
-General Purpose Maven Plugins
+General purpose maven plugins and extensions
 
 ## Plugin list
 
