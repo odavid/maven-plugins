@@ -11,7 +11,7 @@ A Mixin is a regular pom file that concentrate only on a single build aspect of 
 
 ## Usage
 In order to use this plugin, you first need to create a mixin pom or use existing one.
-An example for a mixin pom can be located in [mixin example pom](../../../blob/master/master/examples/mixin-maven-plugin/mixin-example/mixin1/pom.xml)
+An example for a mixin pom can be located in [mixin example pom](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin1/pom.xml)
 
 Next step would be to consume this mixin in your consumer pom.
-An example for a mixin consumer can be located in [mixin consumer example pom](../../../blob/master/master/examples/mixin-maven-plugin/mixin-example/mixin-consumer/pom.xml)
+An example for a mixin consumer can be located in [mixin consumer example pom](../../../blob/master/examples/mixin-maven-plugin/mixin-example/mixin-consumer/pom.xml)
