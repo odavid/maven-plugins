@@ -3,7 +3,6 @@ package com.github.odavid.maven.plugins;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.eclipse.aether.RepositorySystem;
@@ -16,6 +15,7 @@ public class Mixin {
 	private Boolean mergePluginManagement;
 	private Boolean mergePlugins;
 	private Boolean mergeProperties;
+	private Boolean recurse;
 	private Mixins mixins;
 
 	private String key;
@@ -31,6 +31,10 @@ public class Mixin {
 	}
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public void setRecurse(Boolean recurse){
+		this.recurse = recurse;
 	}
 	
 	public void setMergePluginManagement(Boolean mergePluginManagement) {
@@ -60,6 +64,9 @@ public class Mixin {
 	public boolean isMergeProperties() {
 		return mergeProperties != null ? mergeProperties : mixins.isMergeProperties();
 	}
+	public boolean isRecurse(){
+		return recurse != null ? recurse : mixins.isRecurse();
+	}
 	
 	public String getKey(){
 		if(key == null){
@@ -68,8 +75,7 @@ public class Mixin {
 		return key;
 	}
 
-	public void merge(MixinModelCache cache, MavenProject mavenProject, MavenSession mavenSession, Plugin plugin, MixinModelMerger mixinModelMerger, MavenXpp3Reader xpp3Reader, RepositorySystem repositorySystem) throws MavenExecutionException {
-		Model mixinModel = cache.getModel(this, mavenProject, mavenSession, plugin, xpp3Reader, repositorySystem);
+	public void merge(Model mixinModel, MavenProject mavenProject, MavenSession mavenSession, MixinModelMerger mixinModelMerger, MavenXpp3Reader xpp3Reader, RepositorySystem repositorySystem) throws MavenExecutionException {
 		if(isMergeProperties()){
 			mixinModelMerger.mergeProperties(mavenProject.getModel(), mixinModel);
 		}

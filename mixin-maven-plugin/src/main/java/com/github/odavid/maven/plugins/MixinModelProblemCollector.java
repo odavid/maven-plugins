@@ -23,6 +23,11 @@ public class MixinModelProblemCollector implements ModelProblemCollector{
 		severities.add(req.getSeverity());
 	}
 	
+	public void clear(){
+		problems.clear();
+		severities.clear();
+	}
+	
 	public void checkErrors(File pom) throws MavenExecutionException{
         if(severities.contains( ModelProblem.Severity.ERROR ) || severities.contains( ModelProblem.Severity.FATAL )){
         	PrintWriter out = new PrintWriter(new StringWriter());

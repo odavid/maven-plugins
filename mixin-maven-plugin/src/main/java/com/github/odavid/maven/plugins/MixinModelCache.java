@@ -9,9 +9,7 @@ import java.util.Map;
 
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -28,10 +26,10 @@ import org.eclipse.aether.resolution.ArtifactResult;
 public class MixinModelCache {
 	private Map<String,Model> cache = new HashMap<>();
 	
-	public Model getModel(Mixin mixin, MavenProject mavenProject, MavenSession mavenSession, Plugin plugin, MavenXpp3Reader xpp3Reader, RepositorySystem repositorySystem) throws MavenExecutionException{
+	public Model getModel(Mixin mixin, MavenProject mavenProject, MavenSession mavenSession, MavenXpp3Reader xpp3Reader, RepositorySystem repositorySystem) throws MavenExecutionException{
 		Model model = cache.get(mixin.getKey());
 		if(model == null){
-			Artifact artifact = getArtifact(mixin, mavenProject, plugin);
+			Artifact artifact = getArtifact(mixin, mavenProject);
 			File artifactFile;
 			try {
 				artifactFile = resolveArtifact(mavenProject, artifact, mavenSession.getRepositorySession(), repositorySystem);
@@ -64,7 +62,7 @@ public class MixinModelCache {
 			throw new MojoExecutionException(String.format( "Error resolving artifact %s", artifact));
 		}
 	}
-	private Artifact getArtifact(Mixin mixin, MavenProject currentProject, Plugin plugin) throws MavenExecutionException {
+	private Artifact getArtifact(Mixin mixin, MavenProject currentProject) throws MavenExecutionException {
 		String groupId = mixin.getGroupId();
 		String artifactId = mixin.getArtifactId();
 		String depConflictId = mixin.getKey();
@@ -75,14 +73,6 @@ public class MixinModelCache {
 				if (artifact.getDependencyConflictId().equals(depConflictId)) {
 					version = artifact.getVersion();
 					break;
-				}
-			}
-			if (version == null) {
-				for (Dependency dep : plugin.getDependencies()) {
-					if (dep.getGroupId().equals(groupId) && dep.getArtifactId().equals(artifactId) && dep.getType().equals("pom")) {
-						version = dep.getVersion();
-						break;
-					}
 				}
 			}
 			if (version == null) {

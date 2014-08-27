@@ -95,12 +95,12 @@ public class MixinModelMerger extends MavenModelMerger {
 						super.mergePluginExecution(targetPluginExecution, sourceExecution, false, context);
 					}
 				}
-		        mergeConfigurationContainer( targetPlugin, sourcePlugin, false, context);
-		        mergePlugin_GroupId( targetPlugin, sourcePlugin, false, context);
-		        mergePlugin_ArtifactId( targetPlugin, sourcePlugin, false, context);
-		        mergePlugin_Version( targetPlugin, sourcePlugin, false, context);
-		        mergePlugin_Extensions( targetPlugin, sourcePlugin, false, context );
-		        mergePlugin_Dependencies( targetPlugin, sourcePlugin, false, context);
+				super.mergeConfigurationContainer( targetPlugin, sourcePlugin, false, context);
+				super.mergePlugin_GroupId( targetPlugin, sourcePlugin, false, context);
+				super.mergePlugin_ArtifactId( targetPlugin, sourcePlugin, false, context);
+				super.mergePlugin_Version( targetPlugin, sourcePlugin, false, context);
+				super.mergePlugin_Extensions( targetPlugin, sourcePlugin, false, context );
+				super.mergePlugin_Dependencies( targetPlugin, sourcePlugin, false, context);
 			}
 		}
 	}
