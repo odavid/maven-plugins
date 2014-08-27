@@ -90,6 +90,8 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 				//First start with the base level and then add the inherited mixins
 				for(Mixin mixin: mixins.getMixins()){
 					if(!mixinMap.containsKey(mixin.getKey())){
+						logger.debug(String.format("Adding mixin: %s to cache", mixin.getKey()));
+
 						mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
 						mixinMap.put(mixin.getKey(), mixin);
 						mixinList.add(mixin);
@@ -108,6 +110,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	private void mergeMixins(List<Mixin> mixinList, Map<String,Mixin> mixinMap, MavenProject currentProject, MavenSession mavenSession) throws MavenExecutionException {
 		fillMixins(mixinList, mixinMap, currentProject.getModel(), currentProject, mavenSession);
 		for(Mixin mixin: mixinList){
+			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
 			mixin.merge(mixinModel, currentProject, mavenSession, mixinModelMerger, mavenXpp3reader, repositorySystem);
 		}
