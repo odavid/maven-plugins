@@ -19,4 +19,5 @@ An example for a mixin consumer can be found [here](../../../blob/master/example
 The full example (including a base parent pom) can be downloaded from [here](../../../tree/master/examples/mixin-maven-plugin/mixin-example/)
 
 ## Notes
-Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
+- Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
+- Currently, the plugin supports only Maven 3.1+
