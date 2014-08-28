@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
@@ -80,9 +81,14 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	}
 
 	private void fillMixins(List<Mixin> mixinList, Map<String,Mixin> mixinMap, Model model, MavenProject currentProject, MavenSession mavenSession) throws MavenExecutionException {
+		//Merge properties of current Project with mixin for interpolateModel to work correctly 
 		model = model.clone();
+		Properties origProperties = model.getProperties() != null ? model.getProperties() : new Properties();
+		origProperties.putAll(currentProject.getProperties());
+		model.setProperties(origProperties);
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
 		modelInterpolator.interpolateModel(model, currentProject.getBasedir(), modelBuildingRequest, problems);
+		
 		List<Plugin> plugins = model.getBuild().getPlugins();
 		for (Plugin plugin : plugins) {
 			if (plugin.getGroupId().equals(PLUGIN_GROUPID) && plugin.getArtifactId().equals(PLUGIN_ARTIFACTID)) {
