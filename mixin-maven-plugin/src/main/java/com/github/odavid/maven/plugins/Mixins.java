@@ -9,6 +9,7 @@ public class Mixins {
 	private boolean mergePluginManagement = true;
 	private boolean mergeProperties = true;
 	private boolean recurse = true;
+	private boolean activateProfiles = true;
 
 	public void addMixin(Mixin mixin){
 		mixins.add(mixin);
@@ -34,6 +35,10 @@ public class Mixins {
 		this.recurse = recurse;
 	}
 
+	public void setActivateProfiles(boolean activateProfiles){
+		this.activateProfiles = activateProfiles;
+	}
+	
 	public boolean isMergePlugins() {
 		return mergePlugins;
 	}
@@ -47,5 +52,8 @@ public class Mixins {
 	}
 	public boolean isRecurse() {
 		return recurse;
+	}
+	public boolean isActivateProfiles() {
+		return activateProfiles;
 	}
 }

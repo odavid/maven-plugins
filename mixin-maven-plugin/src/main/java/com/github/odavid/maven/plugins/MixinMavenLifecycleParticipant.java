@@ -15,10 +15,14 @@ import org.apache.maven.configuration.DefaultBeanConfigurationRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.interpolation.ModelInterpolator;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.plugin.PluginConfigurationExpander;
+import org.apache.maven.model.profile.DefaultProfileActivationContext;
+import org.apache.maven.model.profile.ProfileInjector;
+import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.component.annotations.Component;
@@ -50,9 +54,16 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private PluginConfigurationExpander pluginConfigurationExpander;
     
+    @Requirement
+    private ProfileInjector profileInjector;
+
+    @Requirement
+    private ProfileSelector profileSelector;
+
     private MixinModelCache mixinModelCache = new MixinModelCache();
     
     private DefaultModelBuildingRequest modelBuildingRequest;
+    
     
 	@Override
 	public void afterSessionStart(MavenSession session) throws MavenExecutionException {
@@ -113,18 +124,37 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		}
 	}
 
+    private DefaultProfileActivationContext getProfileActivationContext(MavenProject currentProject ) {
+        DefaultProfileActivationContext context = new DefaultProfileActivationContext();
+        context.setActiveProfileIds( modelBuildingRequest.getActiveProfileIds() );
+        context.setInactiveProfileIds( modelBuildingRequest.getInactiveProfileIds() );
+        context.setSystemProperties( modelBuildingRequest.getSystemProperties() );
+        context.setUserProperties( modelBuildingRequest.getUserProperties() );
+        context.setProjectDirectory( currentProject.getBasedir() );
+        return context;
+    }
+
 	private void mergeMixins(List<Mixin> mixinList, Map<String,Mixin> mixinMap, MavenProject currentProject, MavenSession mavenSession) throws MavenExecutionException {
 		fillMixins(mixinList, mixinMap, currentProject.getModel(), currentProject, mavenSession);
+		MixinModelProblemCollector problems = new MixinModelProblemCollector();
 		for(Mixin mixin: mixinList){
 			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
-			mixin.merge(mixinModel, currentProject, mavenSession, mixinModelMerger, mavenXpp3reader, repositorySystem);
+			if(mixin.isActivateProfiles()){
+				logger.debug(String.format("Activating profiles in mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
+				mixinModel = mixinModel.clone();
+	            List<Profile> activePomProfiles =
+	                    profileSelector.getActiveProfiles( mixinModel.getProfiles(), getProfileActivationContext(currentProject), problems );
+				for(Profile profile: activePomProfiles){
+					logger.debug(String.format("Activating profile %s in mixin: %s into %s", profile.getId(), mixin.getKey(), currentProject.getFile()));
+					profileInjector.injectProfile(mixinModel, profile, modelBuildingRequest, problems);
+				}
+			}
+			mixin.merge(mixinModel, currentProject, mavenSession, mixinModelMerger);
 		}
 		if(mixinList.size() > 0){
 			//Apply the pluginManagement section on the plugins section
 			mixinModelMerger.applyPluginManagementOnPlugins(currentProject.getModel());
-
-			MixinModelProblemCollector problems = new MixinModelProblemCollector();
 			modelInterpolator.interpolateModel(currentProject.getModel(), currentProject.getBasedir(), modelBuildingRequest, problems);
 			pluginConfigurationExpander.expandPluginConfiguration(currentProject.getModel(), modelBuildingRequest, problems);
 			problems.checkErrors(currentProject.getFile());

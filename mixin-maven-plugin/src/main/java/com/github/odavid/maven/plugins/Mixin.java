@@ -3,9 +3,7 @@ package com.github.odavid.maven.plugins;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.MavenProject;
-import org.eclipse.aether.RepositorySystem;
 
 public class Mixin {
 	private String groupId;
@@ -16,6 +14,7 @@ public class Mixin {
 	private Boolean mergePlugins;
 	private Boolean mergeProperties;
 	private Boolean recurse;
+	private Boolean activateProfiles;
 	private Mixins mixins;
 
 	private String key;
@@ -37,6 +36,9 @@ public class Mixin {
 		this.recurse = recurse;
 	}
 	
+	public void setActivateProfiles(Boolean activateProfiles) {
+		this.activateProfiles = activateProfiles;
+	}
 	public void setMergePluginManagement(Boolean mergePluginManagement) {
 		this.mergePluginManagement = mergePluginManagement;
 	}
@@ -68,6 +70,10 @@ public class Mixin {
 		return recurse != null ? recurse : mixins.isRecurse();
 	}
 	
+	public Boolean isActivateProfiles() {
+		return activateProfiles != null ? activateProfiles : mixins.isActivateProfiles();
+	}
+
 	public String getKey(){
 		if(key == null){
 			key = groupId + ":" + artifactId + ":pom";
@@ -75,7 +81,7 @@ public class Mixin {
 		return key;
 	}
 
-	public void merge(Model mixinModel, MavenProject mavenProject, MavenSession mavenSession, MixinModelMerger mixinModelMerger, MavenXpp3Reader xpp3Reader, RepositorySystem repositorySystem) throws MavenExecutionException {
+	public void merge(Model mixinModel, MavenProject mavenProject, MavenSession mavenSession, MixinModelMerger mixinModelMerger) throws MavenExecutionException {
 		if(isMergeProperties()){
 			mixinModelMerger.mergeProperties(mavenProject.getModel(), mixinModel);
 		}
