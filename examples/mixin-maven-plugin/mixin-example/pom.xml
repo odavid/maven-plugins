@@ -7,7 +7,7 @@
 	<name>${project.groupId}:${project.artifactId}</name>
 
 	<properties>
-		<version.com.github.odavid.maven.plugins>0.1-alpha-14</version.com.github.odavid.maven.plugins>
+		<version.com.github.odavid.maven.plugins>0.1-alpha-17</version.com.github.odavid.maven.plugins>
 	</properties>
 	<modules>
 		<module>mixin1</module>
