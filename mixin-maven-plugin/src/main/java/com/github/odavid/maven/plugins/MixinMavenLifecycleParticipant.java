@@ -28,7 +28,6 @@ import org.apache.maven.project.ProjectBuildingRequest;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
-import org.eclipse.aether.RepositorySystem;
 
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "MixinMavenLifecycleParticipant")
 public class MixinMavenLifecycleParticipant extends AbstractMavenLifecycleParticipant {
@@ -41,9 +40,6 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
 	@Requirement
 	protected Logger logger;
-
-	@Requirement
-	protected RepositorySystem repositorySystem;
 	
 	@Requirement
 	private BeanConfigurator beanConfigurator;
@@ -59,6 +55,9 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
     @Requirement
     private ProfileSelector profileSelector;
+
+    @Requirement
+    private ArtifactFetcher artifactFetcher;
 
     private MixinModelCache mixinModelCache = new MixinModelCache();
     
@@ -109,14 +108,14 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 					if(!mixinMap.containsKey(mixin.getKey())){
 						logger.debug(String.format("Adding mixin: %s to cache", mixin.getKey()));
 
-						mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
+						mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
 						mixinMap.put(mixin.getKey(), mixin);
 						mixinList.add(mixin);
 					}
 				}
 				for(Mixin mixin: mixins.getMixins()){
 					if(mixin.isRecurse()){
-						Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
+						Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
 						fillMixins(mixinList, mixinMap, mixinModel, currentProject, mavenSession);
 					}
 				}
@@ -139,7 +138,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
 		for(Mixin mixin: mixinList){
 			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
-			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, repositorySystem);
+			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
 			if(mixin.isActivateProfiles()){
 				logger.debug(String.format("Activating profiles in mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 				mixinModel = mixinModel.clone();
