@@ -20,4 +20,3 @@ The full example (including a base parent pom) can be downloaded from [here](../
 
 ## Notes
 - Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
-- Currently, the plugin supports only Maven 3.1+
