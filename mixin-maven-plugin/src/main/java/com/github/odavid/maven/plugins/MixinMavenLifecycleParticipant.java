@@ -13,6 +13,7 @@ import org.apache.maven.configuration.BeanConfigurationRequest;
 import org.apache.maven.configuration.BeanConfigurator;
 import org.apache.maven.configuration.DefaultBeanConfigurationRequest;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Profile;
@@ -98,7 +99,9 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		model.setProperties(origProperties);
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
 		modelInterpolator.interpolateModel(model, currentProject.getBasedir(), modelBuildingRequest, problems);
-		
+		if(model.getBuild() == null){
+			model.setBuild(new Build());
+		}
 		List<Plugin> plugins = model.getBuild().getPlugins();
 		for (Plugin plugin : plugins) {
 			if (plugin.getGroupId().equals(PLUGIN_GROUPID) && plugin.getArtifactId().equals(PLUGIN_ARTIFACTID)) {

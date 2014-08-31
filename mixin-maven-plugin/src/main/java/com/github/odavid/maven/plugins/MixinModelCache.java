@@ -50,7 +50,7 @@ public class MixinModelCache {
 			artifactFetcher.resolve(artifact, mavenSession);
 			return artifact.getFile();
 		} catch (ArtifactResolutionException e) {
-			throw new MojoExecutionException(String.format( "Error resolving artifact %s", artifact));
+			throw new MojoExecutionException(String.format( "Error resolving artifact %s", artifact, e));
 		}
 	}
 	private Artifact getArtifact(Mixin mixin, MavenProject currentProject, ArtifactFetcher artifactFetcher) throws MavenExecutionException {
