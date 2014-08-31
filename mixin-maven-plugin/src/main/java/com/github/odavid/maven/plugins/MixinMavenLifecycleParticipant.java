@@ -2,9 +2,11 @@ package com.github.odavid.maven.plugins;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
@@ -139,6 +141,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	private void mergeMixins(List<Mixin> mixinList, Map<String,Mixin> mixinMap, MavenProject currentProject, MavenSession mavenSession) throws MavenExecutionException {
 		fillMixins(mixinList, mixinMap, currentProject.getModel(), currentProject, mavenSession);
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
+		Set<String> mixinProfiles = new HashSet<String>();
 		for(Mixin mixin: mixinList){
 			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
@@ -150,6 +153,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 				for(Profile profile: activePomProfiles){
 					logger.debug(String.format("Activating profile %s in mixin: %s into %s", profile.getId(), mixin.getKey(), currentProject.getFile()));
 					profileInjector.injectProfile(mixinModel, profile, modelBuildingRequest, problems);
+					mixinProfiles.add(profile.getId());
 				}
 			}
 			mixin.merge(mixinModel, currentProject, mavenSession, mixinModelMerger);
@@ -159,6 +163,11 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 			mixinModelMerger.applyPluginManagementOnPlugins(currentProject.getModel());
 			modelInterpolator.interpolateModel(currentProject.getModel(), currentProject.getBasedir(), modelBuildingRequest, problems);
 			pluginConfigurationExpander.expandPluginConfiguration(currentProject.getModel(), modelBuildingRequest, problems);
+			if(currentProject.getInjectedProfileIds().containsKey(Profile.SOURCE_POM)){
+				currentProject.getInjectedProfileIds().get(Profile.SOURCE_POM).addAll(mixinProfiles);
+			}else{
+				currentProject.getInjectedProfileIds().put(Profile.SOURCE_POM, new ArrayList<String>(mixinProfiles));
+			}
 			problems.checkErrors(currentProject.getFile());
 		}
 	}
