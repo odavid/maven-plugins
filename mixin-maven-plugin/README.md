@@ -20,3 +20,16 @@ The full example (including a base parent pom) can be downloaded from [here](../
 
 ## Notes
 - Please pay attention to the fact that plugin versions must be versioned in the consumer pom. You can achieve that by using a parent pom that defines pluginManagement section that only defines plugin versions. Alternatively, you can define the version within the plugin declaration in the consumer pom.
+
+## A Word About Mixin Merging Strategy
+When merging mixins with a pom, the following merging order is taking place:
+- The mixin consumer is the first one in the chain
+- The parent pom of the consumer is next
+- The mixin pom files by their order
+- Recursive mixin pom files with precedence to their location in the tree 
+
+## A Word About Profile Activation
+Mixin pom files can contribute profiles to the mixin consumer. The following logic is taking place when merging profiles:
+- If a profile is declared and activated within the mixin consumer, then the mixin profile with the same id is also activated regardless the activation condition declared within the mixin pom file
+- If a profile is only declared within the mixin consumer, without activation tag and the mixin pom contains activation condition that is evaluated as true, then the profile is being activated within the mixin consumer
+- If a profile is not declared within the mixin consumer, and the mixin pom contains a profile that its activation condition is true, then the profile will be activated within the consumner
