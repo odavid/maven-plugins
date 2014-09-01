@@ -135,11 +135,13 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
         for(Profile profile: currentProject.getActiveProfiles()){
         	activeProfileIds.add(profile.getId());
         }
+        activeProfileIds.addAll(modelBuildingRequest.getActiveProfileIds());
         for(Profile profile: currentProject.getModel().getProfiles()){
         	if(profile.getActivation() != null && !activeProfileIds.contains(profile.getId())){
         		inactiveProfileIds.add(profile.getId());
         	}
         }
+        inactiveProfileIds.addAll(modelBuildingRequest.getInactiveProfileIds());
         context.setActiveProfileIds( activeProfileIds);
         context.setInactiveProfileIds( inactiveProfileIds );
         context.setSystemProperties( mavenSession.getSystemProperties() );

@@ -44,7 +44,7 @@
 			<id>test-profile</id>
 			<activation>
 				<property>
-					<name>!xxx</name>
+					<name>xxx</name>
 				</property>
 			</activation>
 			<properties>
