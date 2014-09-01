@@ -53,4 +53,14 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>test-profile</id>
+			<activation>
+				<property>
+					<name>!xxx</name>
+				</property>
+			</activation>
+		</profile>
+	</profiles>
 </project>

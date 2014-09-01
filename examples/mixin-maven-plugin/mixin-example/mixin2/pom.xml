@@ -42,6 +42,11 @@
 	<profiles>
 		<profile>
 			<id>test-profile</id>
+			<activation>
+				<property>
+					<name>!xxx</name>
+				</property>
+			</activation>
 			<properties>
 				<profileMessage>WE ARE IN A PROFILE</profileMessage>
 			</properties>

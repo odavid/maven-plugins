@@ -130,8 +130,18 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 
     private DefaultProfileActivationContext getProfileActivationContext(MavenSession mavenSession, MavenProject currentProject ) {
         DefaultProfileActivationContext context = new DefaultProfileActivationContext();
-        context.setActiveProfileIds( modelBuildingRequest.getActiveProfileIds() );
-        context.setInactiveProfileIds( modelBuildingRequest.getInactiveProfileIds() );
+        List<String> activeProfileIds = new ArrayList<>();
+        List<String> inactiveProfileIds = new ArrayList<>();
+        for(Profile profile: currentProject.getActiveProfiles()){
+        	activeProfileIds.add(profile.getId());
+        }
+        for(Profile profile: currentProject.getModel().getProfiles()){
+        	if(profile.getActivation() != null && !activeProfileIds.contains(profile.getId())){
+        		inactiveProfileIds.add(profile.getId());
+        	}
+        }
+        context.setActiveProfileIds( activeProfileIds);
+        context.setInactiveProfileIds( inactiveProfileIds );
         context.setSystemProperties( mavenSession.getSystemProperties() );
         context.setUserProperties( mavenSession.getUserProperties() );
         context.setProjectDirectory( currentProject.getBasedir() );
