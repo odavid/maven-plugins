@@ -128,12 +128,12 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		}
 	}
 
-    private DefaultProfileActivationContext getProfileActivationContext(MavenProject currentProject ) {
+    private DefaultProfileActivationContext getProfileActivationContext(MavenSession mavenSession, MavenProject currentProject ) {
         DefaultProfileActivationContext context = new DefaultProfileActivationContext();
         context.setActiveProfileIds( modelBuildingRequest.getActiveProfileIds() );
         context.setInactiveProfileIds( modelBuildingRequest.getInactiveProfileIds() );
-        context.setSystemProperties( modelBuildingRequest.getSystemProperties() );
-        context.setUserProperties( modelBuildingRequest.getUserProperties() );
+        context.setSystemProperties( mavenSession.getSystemProperties() );
+        context.setUserProperties( mavenSession.getUserProperties() );
         context.setProjectDirectory( currentProject.getBasedir() );
         return context;
     }
@@ -149,7 +149,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 				logger.debug(String.format("Activating profiles in mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 				mixinModel = mixinModel.clone();
 	            List<Profile> activePomProfiles =
-	                    profileSelector.getActiveProfiles( mixinModel.getProfiles(), getProfileActivationContext(currentProject), problems );
+	                    profileSelector.getActiveProfiles( mixinModel.getProfiles(), getProfileActivationContext(mavenSession, currentProject), problems );
 				for(Profile profile: activePomProfiles){
 					logger.debug(String.format("Activating profile %s in mixin: %s into %s", profile.getId(), mixin.getKey(), currentProject.getFile()));
 					profileInjector.injectProfile(mixinModel, profile, modelBuildingRequest, problems);
