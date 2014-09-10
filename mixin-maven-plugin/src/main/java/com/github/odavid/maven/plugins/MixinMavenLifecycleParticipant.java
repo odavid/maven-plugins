@@ -20,6 +20,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
+import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.interpolation.ModelInterpolator;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.plugin.PluginConfigurationExpander;
@@ -100,7 +101,12 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		origProperties.putAll(currentProject.getProperties());
 		model.setProperties(origProperties);
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
-		modelInterpolator.interpolateModel(model, currentProject.getBasedir(), modelBuildingRequest, problems);
+
+		ModelBuildingRequest request = new DefaultModelBuildingRequest(modelBuildingRequest);
+		request.setSystemProperties(mavenSession.getSystemProperties());
+		request.setUserProperties(mavenSession.getUserProperties());
+		
+		modelInterpolator.interpolateModel(model, currentProject.getBasedir(), request, problems);
 		if(model.getBuild() == null){
 			model.setBuild(new Build());
 		}
@@ -173,8 +179,13 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		if(mixinList.size() > 0){
 			//Apply the pluginManagement section on the plugins section
 			mixinModelMerger.applyPluginManagementOnPlugins(currentProject.getModel());
-			modelInterpolator.interpolateModel(currentProject.getModel(), currentProject.getBasedir(), modelBuildingRequest, problems);
-			pluginConfigurationExpander.expandPluginConfiguration(currentProject.getModel(), modelBuildingRequest, problems);
+			
+			ModelBuildingRequest request = new DefaultModelBuildingRequest(modelBuildingRequest);
+			request.setSystemProperties(mavenSession.getSystemProperties());
+			request.setUserProperties(mavenSession.getUserProperties());
+			
+			modelInterpolator.interpolateModel(currentProject.getModel(), currentProject.getBasedir(), request, problems);
+			pluginConfigurationExpander.expandPluginConfiguration(currentProject.getModel(), request, problems);
 			if(currentProject.getInjectedProfileIds().containsKey(Profile.SOURCE_POM)){
 				currentProject.getInjectedProfileIds().get(Profile.SOURCE_POM).addAll(mixinProfiles);
 			}else{
