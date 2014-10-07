@@ -52,6 +52,10 @@ public class MixinModelCache {
 			}			
 			try {
 				model = xpp3Reader.read(new FileInputStream(artifactFile));
+				model.setVersion(mixin.getVersion());
+				model.setGroupId(mixin.getGroupId());
+				model.setArtifactId(mixin.getArtifactId());
+				
 				cache.put(mixin.getKey(), model);
 			} catch (FileNotFoundException e) {
 				throw new MavenExecutionException (String.format("Cannot find mixin file %s for mixin artifact %s ", artifactFile, mixin) , e);
