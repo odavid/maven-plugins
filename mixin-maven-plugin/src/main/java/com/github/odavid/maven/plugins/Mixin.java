@@ -9,6 +9,7 @@ public class Mixin {
 	private String groupId;
 	private String artifactId;
 	private String version;
+	private String type;
 
 	private Boolean mergePluginManagement;
 	private Boolean mergePlugins;
@@ -73,10 +74,16 @@ public class Mixin {
 	public Boolean isActivateProfiles() {
 		return activateProfiles != null ? activateProfiles : mixins.isActivateProfiles();
 	}
+	public String getType(){
+		if(type == null){
+			type = mixins.getDefaultMixinType(); 
+		}
+		return type;
+	}
 
 	public String getKey(){
 		if(key == null){
-			key = groupId + ":" + artifactId + ":pom";
+			key = groupId + ":" + artifactId + ":" + getType();
 		}
 		return key;
 	}
@@ -91,6 +98,11 @@ public class Mixin {
 		if(isMergePlugins()){
 			mixinModelMerger.mergePlugins(mavenProject.getModel(), mixinModel);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return getKey();
 	}
 
 }

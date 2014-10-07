@@ -63,7 +63,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private ArtifactFetcher artifactFetcher;
 
-    private MixinModelCache mixinModelCache = new MixinModelCache();
+    private MixinModelCache mixinModelCache;
     
     private DefaultModelBuildingRequest modelBuildingRequest;
     
@@ -75,6 +75,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	@Override
 	public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
 		logger.info(String.format("%s: Merging Mixins", PLUGIN_ARTIFACTID));
+		 mixinModelCache = new MixinModelCache(logger);
 		
 		ProjectBuildingRequest projectBuildingRequest = mavenSession.getProjectBuildingRequest();
 		modelBuildingRequest = new DefaultModelBuildingRequest();

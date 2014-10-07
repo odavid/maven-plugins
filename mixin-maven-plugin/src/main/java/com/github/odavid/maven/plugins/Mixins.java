@@ -10,7 +10,14 @@ public class Mixins {
 	private boolean mergeProperties = true;
 	private boolean recurse = true;
 	private boolean activateProfiles = true;
+	private String defaultMixinType = "pom";
 
+	public String getDefaultMixinType() {
+		return defaultMixinType;
+	}
+	public void setDefaultMixinType(String defaultMixinType) {
+		this.defaultMixinType = defaultMixinType;
+	}
 	public void addMixin(Mixin mixin){
 		mixins.add(mixin);
 		mixin.setMixins(this);

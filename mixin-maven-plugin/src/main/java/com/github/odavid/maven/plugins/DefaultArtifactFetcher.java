@@ -1,10 +1,13 @@
 package com.github.odavid.maven.plugins;
 
+import java.util.Arrays;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ResolutionErrorHandler;
+import org.apache.maven.artifact.resolver.filter.IncludesArtifactFilter;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.component.annotations.Component;
@@ -27,6 +30,7 @@ public class DefaultArtifactFetcher implements ArtifactFetcher{
 	public void resolve(Artifact artifact, MavenSession session) throws ArtifactResolutionException{
 		ArtifactResolutionRequest request = new ArtifactResolutionRequest();
 		request.setArtifact(artifact);
+		request.setCollectionFilter(new IncludesArtifactFilter(Arrays.asList((new String[]{artifact.getId()}))));
 		request.setResolveRoot( true ).setResolveTransitively( true ).setLocalRepository(
                     session.getLocalRepository() ).setOffline( session.isOffline() ).setForceUpdate(
                     session.getRequest().isUpdateSnapshots() );

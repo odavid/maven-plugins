@@ -14,6 +14,12 @@
 		<mavenVersion>3.1.0</mavenVersion>
 	</properties>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.maven.plugin-tools</groupId>
+			<artifactId>maven-plugin-annotations</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-core</artifactId>
@@ -35,9 +41,27 @@
 					<version>1.5.5</version>
 					<executions>
 						<execution>
+							<id>generate-metadata</id>
+							<phase>process-classes</phase>
 							<goals>
 								<goal>generate-metadata</goal>
 							</goals>
+							<configuration>
+								<generatedMetadata>${project.build.directory}/temp-components.xml</generatedMetadata>
+							</configuration>
+						</execution>
+						<execution>
+							<id>merge-metadata</id>
+							<phase>process-classes</phase>
+							<goals>
+								<goal>merge-metadata</goal>
+							</goals>
+							<configuration>
+								<descriptors>
+									<descriptor>${project.build.directory}/temp-components.xml</descriptor>
+									<descriptor>${project.basedir}/src/main/config/plexus/components.xml</descriptor>
+								</descriptors>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
