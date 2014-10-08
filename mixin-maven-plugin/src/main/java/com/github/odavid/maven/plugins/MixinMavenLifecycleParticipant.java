@@ -40,10 +40,12 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	private static final String PLUGIN_ARTIFACTID = "mixin-maven-plugin";
 	
 	private final MavenXpp3Reader mavenXpp3reader = new MavenXpp3Reader();
-	private final MixinModelMerger mixinModelMerger = new MixinModelMerger();
+	
+	@Requirement
+	private MixinModelMerger mixinModelMerger;
 
 	@Requirement
-	protected Logger logger;
+	private Logger logger;
 	
 	@Requirement
 	private BeanConfigurator beanConfigurator;
@@ -63,6 +65,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private ArtifactFetcher artifactFetcher;
 
+    @Requirement
     private MixinModelCache mixinModelCache;
     
     private DefaultModelBuildingRequest modelBuildingRequest;
@@ -75,8 +78,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 	@Override
 	public void afterProjectsRead(MavenSession mavenSession) throws MavenExecutionException {
 		logger.info(String.format("%s: Merging Mixins", PLUGIN_ARTIFACTID));
-		 mixinModelCache = new MixinModelCache(logger);
-		
+		mixinModelCache.init(mavenSession, mavenXpp3reader); 
 		ProjectBuildingRequest projectBuildingRequest = mavenSession.getProjectBuildingRequest();
 		modelBuildingRequest = new DefaultModelBuildingRequest();
 		modelBuildingRequest.setActiveProfileIds(projectBuildingRequest.getActiveProfileIds());
@@ -120,14 +122,14 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 					if(!mixinMap.containsKey(mixin.getKey())){
 						logger.debug(String.format("Adding mixin: %s to cache", mixin.getKey()));
 
-						mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
+						mixinModelCache.getModel(mixin, currentProject);
 						mixinMap.put(mixin.getKey(), mixin);
 						mixinList.add(mixin);
 					}
 				}
 				for(Mixin mixin: mixins.getMixins()){
 					if(mixin.isRecurse()){
-						Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
+						Model mixinModel = mixinModelCache.getModel(mixin, currentProject);
 						fillMixins(mixinList, mixinMap, mixinModel, currentProject, mavenSession);
 					}
 				}
@@ -163,7 +165,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		Set<String> mixinProfiles = new HashSet<String>();
 		for(Mixin mixin: mixinList){
 			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
-			Model mixinModel = mixinModelCache.getModel(mixin, currentProject, mavenSession, mavenXpp3reader, artifactFetcher);
+			Model mixinModel = mixinModelCache.getModel(mixin, currentProject);
 			if(mixin.isActivateProfiles()){
 				logger.debug(String.format("Activating profiles in mixin: %s into %s", mixin.getKey(), currentProject.getFile()));
 				mixinModel = mixinModel.clone();

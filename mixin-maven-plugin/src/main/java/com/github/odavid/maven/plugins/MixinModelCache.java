@@ -16,24 +16,37 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.component.annotations.Component;
+import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
+@Component(role=MixinModelCache.class)
 public class MixinModelCache {
 	private Map<String,Model> cache = new HashMap<>();
-	@SuppressWarnings("unused")
+	
+	@Requirement
 	private Logger logger;
 	
-	public MixinModelCache(Logger logger){
-		this.logger = logger;
+	@Requirement
+	private ArtifactFetcher artifactFetcher;
+	
+	private MavenSession mavenSession;
+	
+	private MavenXpp3Reader xpp3Reader;
+
+	public void init(MavenSession mavenSession, MavenXpp3Reader xpp3Reader){
+		this.mavenSession = mavenSession;
+		this.xpp3Reader = xpp3Reader;
 	}
-	public Model getModel(Mixin mixin, MavenProject mavenProject, MavenSession mavenSession, MavenXpp3Reader xpp3Reader, ArtifactFetcher artifactFetcher) throws MavenExecutionException{
+	public Model getModel(Mixin mixin, MavenProject mavenProject) throws MavenExecutionException{
 		Model model = cache.get(mixin.getKey());
 		if(model == null){
 			checkMixinVersion(mixin, mavenProject);
 			File artifactFile = null;
 			for(MavenProject project: mavenSession.getProjects()){
+				logger.debug(String.format("Checking if mixin %s is in within the same reactor", mixin));
 				if(project.getGroupId().equals(mixin.getGroupId()) && project.getArtifactId().equals(mixin.getArtifactId()) && mixin.getVersion().equals(project.getVersion())){
 					File mixinFile = new File(project.getBasedir(), mixin.getType() + ".xml");
 					if(mixinFile.exists()){
@@ -42,9 +55,9 @@ public class MixinModelCache {
 				}
 			}
 			if(artifactFile == null){
-				Artifact artifact = getArtifact(mixin, mavenProject, artifactFetcher);
+				Artifact artifact = getArtifact(mixin, mavenProject);
 				try {
-					artifactFile = resolveArtifact(mavenSession, artifact, artifactFetcher);
+					artifactFile = resolveArtifact(artifact);
 				} catch (MojoExecutionException e) {
 					throw new MavenExecutionException (String.format("Cannot resolve mixin artifact %s", artifact), e);
 				}
@@ -53,6 +66,7 @@ public class MixinModelCache {
 				}
 			}			
 			try {
+				logger.debug(String.format("loading mixin %s locally from %s", mixin, artifactFile));
 				model = xpp3Reader.read(new FileInputStream(artifactFile));
 				model.setVersion(mixin.getVersion());
 				model.setGroupId(mixin.getGroupId());
@@ -70,7 +84,7 @@ public class MixinModelCache {
 		}
 		return model;
 	}
-	private File resolveArtifact(MavenSession mavenSession, Artifact artifact, ArtifactFetcher artifactFetcher) throws MojoExecutionException {
+	private File resolveArtifact(Artifact artifact) throws MojoExecutionException {
 		try {
 			artifactFetcher.resolve(artifact, mavenSession);
 			return artifact.getFile();
@@ -110,7 +124,7 @@ public class MixinModelCache {
 			}
 		}
 	}
-	private Artifact getArtifact(Mixin mixin, MavenProject currentProject, ArtifactFetcher artifactFetcher) throws MavenExecutionException {
+	private Artifact getArtifact(Mixin mixin, MavenProject currentProject) throws MavenExecutionException {
 		String groupId = mixin.getGroupId();
 		String artifactId = mixin.getArtifactId();
 		String version = mixin.getVersion();

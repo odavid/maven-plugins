@@ -11,11 +11,13 @@ import org.apache.maven.model.PluginContainer;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.merge.MavenModelMerger;
+import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * MixinModelMerger 
  * Enables pluginManagement and properties import from different pom files. Uses protected methods of MavenModelMerger, and therefore inherits from it
  */
+@Component(role=MixinModelMerger.class)
 public class MixinModelMerger extends MavenModelMerger {
 	
 	public void mergePluginManagement(Model target, Model source){
