@@ -11,6 +11,7 @@ import org.apache.maven.MavenExecutionException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -30,9 +31,10 @@ public class MixinModelCache {
 	public Model getModel(Mixin mixin, MavenProject mavenProject, MavenSession mavenSession, MavenXpp3Reader xpp3Reader, ArtifactFetcher artifactFetcher) throws MavenExecutionException{
 		Model model = cache.get(mixin.getKey());
 		if(model == null){
+			checkMixinVersion(mixin, mavenProject);
 			File artifactFile = null;
 			for(MavenProject project: mavenSession.getProjects()){
-				if(project.getGroupId().equals(mixin.getGroupId()) && project.getArtifactId().equals(mixin.getArtifactId())){
+				if(project.getGroupId().equals(mixin.getGroupId()) && project.getArtifactId().equals(mixin.getArtifactId()) && mixin.getVersion().equals(project.getVersion())){
 					File mixinFile = new File(project.getBasedir(), mixin.getType() + ".xml");
 					if(mixinFile.exists()){
 						artifactFile = mixinFile;
@@ -76,25 +78,43 @@ public class MixinModelCache {
 			throw new MojoExecutionException(String.format( "Error resolving artifact %s", artifact, e));
 		}
 	}
+	private void checkMixinVersion(Mixin mixin, MavenProject currentProject) throws MavenExecutionException {
+		if(StringUtils.isEmpty(mixin.getVersion())){
+			String groupId = mixin.getGroupId();
+			String artifactId = mixin.getArtifactId();
+			String depConflictId = mixin.getKey();
+			String version = mixin.getVersion();
+			String type = mixin.getType();
+			
+			if (StringUtils.isEmpty(version)) {
+				version = null;
+				for (org.apache.maven.artifact.Artifact artifact : currentProject.getArtifacts()) {
+					if (artifact.getDependencyConflictId().equals(depConflictId)) {
+						version = artifact.getVersion();
+						mixin.setVersion(version);
+						break;
+					}
+				}
+				if(version == null){
+					for (Dependency dependency : currentProject.getDependencyManagement().getDependencies()) {
+						if (dependency.getArtifactId().equals(artifactId) && dependency.getGroupId().equals(groupId) && dependency.getType().equals(type)) {
+							version = dependency.getVersion();
+							mixin.setVersion(version);
+							break;
+						}
+					}
+				}
+				if (version == null) {
+					throw new MavenExecutionException( "Cannot find version for " + depConflictId, currentProject.getFile());
+				}
+			}
+		}
+	}
 	private Artifact getArtifact(Mixin mixin, MavenProject currentProject, ArtifactFetcher artifactFetcher) throws MavenExecutionException {
 		String groupId = mixin.getGroupId();
 		String artifactId = mixin.getArtifactId();
-		String depConflictId = mixin.getKey();
 		String version = mixin.getVersion();
 		String type = mixin.getType();
-		
-		if (StringUtils.isEmpty(version)) {
-			version = null;
-			for (org.apache.maven.artifact.Artifact artifact : currentProject.getArtifacts()) {
-				if (artifact.getDependencyConflictId().equals(depConflictId)) {
-					version = artifact.getVersion();
-					break;
-				}
-			}
-			if (version == null) {
-				throw new MavenExecutionException( "Cannot find version for " + depConflictId, currentProject.getFile());
-			}
-		}
 		return artifactFetcher.createArtifact(groupId, artifactId, type, null, version);
 	}
 
