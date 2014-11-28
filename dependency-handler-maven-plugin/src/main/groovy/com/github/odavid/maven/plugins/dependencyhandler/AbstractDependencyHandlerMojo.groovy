@@ -19,7 +19,6 @@ import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter
 import org.codehaus.gmaven.mojo.GroovyMojo
 
-@Mojo(name="create-symlink", requiresDependencyResolution=ResolutionScope.COMPILE, requiresProject=true, threadSafe=true)
 abstract class AbstractDependencyHandlerMojo extends GroovyMojo{
 	
 	@Component
