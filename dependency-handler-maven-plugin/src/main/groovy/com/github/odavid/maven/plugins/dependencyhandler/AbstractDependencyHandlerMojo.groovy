@@ -131,44 +131,41 @@ abstract class AbstractDependencyHandlerMojo extends GroovyMojo{
 	}
 	
 	void dependencyMavenPluginCopy(List<Artifact> filtered){
-		executeMojo(
-				plugin(
-					'org.apache.maven.plugins',
-					'maven-dependency-plugin',
-					dependencyPluginVersion
-				),
-				'copy',
+		dependencyMavenPlugin(filtered, 'copy', {
 				configuration(
 					element(name('stripVersion'), "${stripVersion}"),
 					element(name('stripClassifier'), "${stripClassifier}"),
 					element(name('outputDirectory'), "${outputDirectory}"),
 					element(name('artifactItems'), artifactItems(filtered))
-				),
-				executionEnvironment(
-					mavenProject,
-					mavenSession,
-					pluginManager
 				)
-		);
+			}
+		)
 	}
 	void dependencyMavenPluginUnpack(List<Artifact> filtered){
-		executeMojo(
-				plugin(
-					groupId('org.apache.maven.plugins'),
-					artifactId('maven-dependency-plugin'),
-					version(dependencyPluginVersion)
-				),
-				'unpack',
+		dependencyMavenPlugin(filtered, 'unpack', {
 				configuration(
 					element(name('markersDirectory'), "${markersDirectory}"),
 					element(name('outputDirectory'), "${outputDirectory}"),
 					element(name('artifactItems'), artifactItems(filtered))
-				),
-				executionEnvironment(
-					mavenProject,
-					mavenSession,
-					pluginManager
 				)
+			}
+		)
+	}
+	
+	private void dependencyMavenPlugin(List<Artifact> filtered, String goal, Closure configuration){
+		executeMojo(
+			plugin(
+				groupId('org.apache.maven.plugins'),
+				artifactId('maven-dependency-plugin'),
+				version(dependencyPluginVersion)
+			),
+			goal,
+			configuration(filtered),
+			executionEnvironment(
+				mavenProject,
+				mavenSession,
+				pluginManager
+			)
 		);
 	}
 }
