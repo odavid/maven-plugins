@@ -6,32 +6,18 @@
 		<version>0.1-alpha-26-SNAPSHOT</version>
 		<relativePath>../groovy-based-mojo-parent</relativePath>
 	</parent>
-	<artifactId>dependency-handler-maven-plugin</artifactId>
-	<packaging>maven-plugin</packaging>
+	<artifactId>groovy-mojo-utils</artifactId>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.maven.shared</groupId>
-			<artifactId>maven-common-artifact-filters</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.twdata.maven</groupId>
-			<artifactId>mojo-executor</artifactId>
-			<version>2.2.0</version>
+			<groupId>org.codehaus.gmaven</groupId>
+			<artifactId>gmaven-mojo</artifactId>
+			<version>${version.gmaven}</version>
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>groovy-mojo-utils</artifactId>
+			<artifactId>ant-maven-logger</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-plugin-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
 </project>

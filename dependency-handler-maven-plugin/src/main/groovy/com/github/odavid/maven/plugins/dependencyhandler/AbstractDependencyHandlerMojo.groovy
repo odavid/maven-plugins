@@ -17,9 +17,9 @@ import org.apache.maven.plugins.annotations.ResolutionScope
 import org.apache.maven.project.MavenProject
 import org.apache.maven.shared.artifact.filter.PatternExcludesArtifactFilter
 import org.apache.maven.shared.artifact.filter.PatternIncludesArtifactFilter
-import org.codehaus.gmaven.mojo.GroovyMojo
+import com.github.odavid.maven.plugins.groovy.GroovyMojoWithAntLogger
 
-abstract class AbstractDependencyHandlerMojo extends GroovyMojo{
+abstract class AbstractDependencyHandlerMojo extends GroovyMojoWithAntLogger{
 	
 	@Component
 	MavenProject mavenProject

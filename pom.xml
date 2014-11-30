@@ -60,6 +60,7 @@
 		<module>unpacked-repository-maven-plugin</module>
 		<module>mixin-maven-plugin</module>
 		<module>groovy-based-mojo-parent</module>
+		<module>groovy-mojo-utils</module>
 		<module>dependency-handler-maven-plugin</module>
 	</modules>
 
