@@ -9,7 +9,7 @@
 
 	<groupId>com.github.odavid</groupId>
 	<artifactId>plugins-parent</artifactId>
-	<version>0.1-alpha-26-SNAPSHOT</version>
+	<version>0.1-alpha-27-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>${project.groupId}:${project.artifactId}</name>
