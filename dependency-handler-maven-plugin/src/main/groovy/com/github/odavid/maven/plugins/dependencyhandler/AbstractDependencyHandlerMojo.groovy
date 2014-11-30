@@ -21,10 +21,10 @@ import com.github.odavid.maven.plugins.groovy.GroovyMojoWithAntLogger
 
 abstract class AbstractDependencyHandlerMojo extends GroovyMojoWithAntLogger{
 	
-	@Component
+	@Parameter(defaultValue='${project}', readonly=true)
 	MavenProject mavenProject
 	
-	@Component
+	@Parameter(defaultValue='${session}', readonly=true)
 	MavenSession mavenSession
 	
 	@Component
