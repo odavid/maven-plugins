@@ -26,7 +26,7 @@ public class MavenProjectClasspathUtil {
 		}
 		ant.jar(jarfile: classpathMetaJar){
 			manifest{
-				attribute(name: 'Class-Path', value: relativePaths.join(File.pathSeparator))
+				attribute(name: 'Class-Path', value: relativePaths.join(' '))
 			}
 		}
 	}
