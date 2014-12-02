@@ -115,7 +115,9 @@ public class ExecuteMavenPluginAntTask extends AbstractMavenAntTask {
 		public void addText(String text) throws BuildException{
 			PropertyHelper propertyHelper = PropertyHelper.getPropertyHelper(antProject);
 			text = propertyHelper.replaceProperties(text);
-			this.element.setValue(text);
+			if(!text.trim().isEmpty()){
+				this.element.setValue(text.trim());
+			}
 		}
 	}
 }
