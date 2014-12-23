@@ -40,9 +40,16 @@ class GroovyMojoExtractor implements MojoDescriptorExtractor {
 				GroovyClassDoc gClass = gClasses[d.implementation]
 				if(gClass){
 					def gClassProperties = [:]
-					gClass.properties().each {
-						gClassProperties[it.name()] = it
+					def fetchProperties
+					fetchProperties = {GroovyClassDoc theClass ->
+						theClass.properties().each {
+							gClassProperties[it.name()] = it
+						}
+						if(theClass.superclass()){
+							fetchProperties(theClass.superclass())
+						}
 					}
+					fetchProperties(gClass)
 					d.description = gClass.commentText()?.trim()
 					d.parameters.each {
 						if(gClassProperties[it.name]){
