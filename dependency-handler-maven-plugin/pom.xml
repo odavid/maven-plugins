@@ -29,9 +29,11 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
 			</plugin>
-		</plugins>
+<!-- 			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+			</plugin>
+ -->		</plugins>
 	</build>
 </project>

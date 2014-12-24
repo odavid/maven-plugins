@@ -20,6 +20,10 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
+		<version.org.codehaus.groovy>2.1.8</version.org.codehaus.groovy>
+		<version.groovy-eclipse-compiler>2.9.1-01</version.groovy-eclipse-compiler>
+		<version.groovy-eclipse-batch>2.1.8-01</version.groovy-eclipse-batch>
+		<version.gmaven>1.5</version.gmaven>
 	</properties>
 
 	<licenses>
@@ -120,6 +124,22 @@
 				<artifactId>plexus-utils</artifactId>
 				<version>3.0.9</version>
 			</dependency>
+			<dependency>
+				<groupId>org.codehaus.groovy</groupId>
+				<artifactId>groovy-all</artifactId>
+				<version>${version.org.codehaus.groovy}</version>
+			</dependency>			
+			<dependency>
+				<groupId>org.codehaus.gmaven</groupId>
+				<artifactId>gmaven-mojo</artifactId>
+				<version>${version.gmaven}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.codehaus.groovy</groupId>
+						<artifactId>groovy-all-minimal</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -138,6 +158,11 @@
 		</extensions>
 		<pluginManagement>
 			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>1.9.1</version>
+				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
@@ -241,6 +266,24 @@
 							<configuration>
 								<helpPackageName>${project.groupId}</helpPackageName>
 							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-invoker-plugin</artifactId>
+					<version>1.9</version>
+					<configuration>
+						<cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+						<localRepositoryPath>${settings.localRepository}/it/repository</localRepositoryPath>
+					</configuration>
+					<executions>
+						<execution>
+							<id>integration-test</id>
+							<goals>
+								<goal>install</goal>
+								<goal>run</goal>
+							</goals>
 						</execution>
 					</executions>
 				</plugin>
