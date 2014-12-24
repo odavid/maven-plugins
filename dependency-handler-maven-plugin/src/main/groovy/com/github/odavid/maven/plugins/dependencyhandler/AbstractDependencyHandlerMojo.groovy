@@ -114,7 +114,7 @@ abstract class AbstractDependencyHandlerMojo extends GroovyMojoWithAntLogger{
 		}
 	}
 
-	private Element[] artifactItems(List<Artifact> filtered){
+	Element[] artifactItems(List<Artifact> filtered){
 		def items = filtered.collect { a ->
 			def coordinates = [
 				element('groupId', a.groupId),

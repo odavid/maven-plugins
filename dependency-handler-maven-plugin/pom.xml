@@ -31,9 +31,24 @@
 			<plugin>
 				<artifactId>maven-plugin-plugin</artifactId>
 			</plugin>
-<!-- 			<plugin>
-				<artifactId>maven-invoker-plugin</artifactId>
-			</plugin>
- -->		</plugins>
+		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>run-its</id>
+			<activation>
+				<property>
+					<name>run.its</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-invoker-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
