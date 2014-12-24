@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.github.odavid</groupId>
 		<artifactId>plugins-parent</artifactId>
-		<version>0.1-alpha-31</version>
+		<version>0.1-alpha-32-SNAPSHOT</version>
 	</parent>
 	<groupId>com.github.odavid.maven.plugins</groupId>
 	<artifactId>groovy-based-parent</artifactId>
