@@ -221,6 +221,7 @@
 					<configuration>
 						<preparationGoals>clean:clean</preparationGoals>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<arguments>-Drun.its=true</arguments>
 					</configuration>
 				</plugin>
 				<plugin>
