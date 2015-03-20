@@ -15,6 +15,7 @@
 		<ant.contrib.version>1.0b3</ant.contrib.version>
 		<maven-script-ant.version>2.2.1</maven-script-ant.version>
 		<maven-plugin-tools.version>3.2</maven-plugin-tools.version>
+		<version.plexus-utils>3.0.9</version.plexus-utils>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -61,17 +62,16 @@
 						<groupId>org.slf4j</groupId>
 						<artifactId>jcl-over-slf4j</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.codehaus.plexus</groupId>
+						<artifactId>plexus-ant-factory</artifactId>
+					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>com.oopsconsultancy</groupId>
-				<artifactId>xmltask</artifactId>
-				<version>1.16</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
 				<artifactId>plexus-utils</artifactId>
-				<version>3.0.9</version>
+				<version>${version.plexus-utils}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -103,16 +103,6 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-script-ant</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.codehaus.plexus</groupId>
-					<artifactId>plexus-ant-factory</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>com.oopsconsultancy</groupId>
-			<artifactId>xmltask</artifactId>
 		</dependency>
 	</dependencies>
 
