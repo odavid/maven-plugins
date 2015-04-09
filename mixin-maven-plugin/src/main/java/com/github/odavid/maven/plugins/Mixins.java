@@ -8,6 +8,7 @@ public class Mixins {
 	private boolean mergePlugins = true;
 	private boolean mergePluginManagement = true;
 	private boolean mergeProperties = true;
+	private boolean mergeReporting = true;
 	private boolean recurse = true;
 	private boolean activateProfiles = true;
 	private String defaultMixinType = "pom";
@@ -63,4 +64,12 @@ public class Mixins {
 	public boolean isActivateProfiles() {
 		return activateProfiles;
 	}
+	public boolean isMergeReporting() {
+		return mergeReporting;
+	}
+	public void setMergeReporting(boolean mergeReporting) {
+		this.mergeReporting = mergeReporting;
+	}
+	
+	
 }
