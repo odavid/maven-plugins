@@ -1,5 +1,7 @@
 # maven-plugins
 
+[![Build Status](https://travis-ci.org/odavid/maven-plugins.png?branch=master)](https://travis-ci.org/odavid/maven-plugins)
+
 General purpose maven plugins and extensions
 
 ## Plugin list
