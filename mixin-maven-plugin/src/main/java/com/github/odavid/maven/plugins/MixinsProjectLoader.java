@@ -22,6 +22,7 @@ import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingRequest;
 import org.apache.maven.model.interpolation.ModelInterpolator;
 import org.apache.maven.model.plugin.PluginConfigurationExpander;
+import org.apache.maven.model.plugin.ReportingConverter;
 import org.apache.maven.model.profile.DefaultProfileActivationContext;
 import org.apache.maven.model.profile.ProfileInjector;
 import org.apache.maven.model.profile.ProfileSelector;
@@ -41,7 +42,7 @@ public class MixinsProjectLoader {
     private ModelInterpolator modelInterpolator;
     private PluginConfigurationExpander pluginConfigurationExpander;
 	private BeanConfigurator beanConfigurator;
-
+	private ReportingConverter reportingConverter;
 
     private DefaultModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest();
     private MixinModelCache mixinModelCache;
@@ -51,7 +52,7 @@ public class MixinsProjectLoader {
 			PluginConfigurationExpander pluginConfigurationExpander, 
 			BeanConfigurator beanConfigurator, Logger logger, 
 			MixinModelCache mixinModelCache, ProfileSelector profileSelector, ProfileInjector profileInjector, 
-			MixinModelMerger mixinModelMerger){
+			MixinModelMerger mixinModelMerger, ReportingConverter reportingConverter){
 		this.mavenSession = mavenSession;
 		this.mavenProject = mavenProject;
 		this.modelInterpolator = modelInterpolator;
@@ -62,6 +63,7 @@ public class MixinsProjectLoader {
 		this.profileSelector = profileSelector;
 		this.profileInjector = profileInjector;
 		this.mixinModelMerger = mixinModelMerger;
+		this.reportingConverter = reportingConverter;
 		
 		ProjectBuildingRequest projectBuildingRequest = mavenSession.getProjectBuildingRequest();
 		modelBuildingRequest.setActiveProfileIds(projectBuildingRequest.getActiveProfileIds());
@@ -74,6 +76,10 @@ public class MixinsProjectLoader {
 		Map<String,Mixin> mixinMap = new HashMap<String, Mixin>();
 		fillMixins(mixinList, mixinMap, mavenProject.getModel());
 		MixinModelProblemCollector problems = new MixinModelProblemCollector();
+		ModelBuildingRequest request = new DefaultModelBuildingRequest(modelBuildingRequest);
+		request.setSystemProperties(mavenSession.getSystemProperties());
+		request.setUserProperties(mavenSession.getUserProperties());
+
 		Set<String> mixinProfiles = new HashSet<String>();
 		for(Mixin mixin: mixinList){
 			logger.debug(String.format("Merging mixin: %s into %s", mixin.getKey(), mavenProject.getFile()));
@@ -89,16 +95,14 @@ public class MixinsProjectLoader {
 					mixinProfiles.add(profile.getId());
 				}
 			}
+			//Need to convert old style reporting before merging the mixin, so the site plugin will be merged correctly
+			reportingConverter.convertReporting(mixinModel, request, problems);
 			mixin.merge(mixinModel, mavenProject, mavenSession, mixinModelMerger);
 		}
 		if(mixinList.size() > 0){
 			//Apply the pluginManagement section on the plugins section
 			mixinModelMerger.applyPluginManagementOnPlugins(mavenProject.getModel());
-			
-			ModelBuildingRequest request = new DefaultModelBuildingRequest(modelBuildingRequest);
-			request.setSystemProperties(mavenSession.getSystemProperties());
-			request.setUserProperties(mavenSession.getUserProperties());
-			
+
 			modelInterpolator.interpolateModel(mavenProject.getModel(), mavenProject.getBasedir(), request, problems);
 			pluginConfigurationExpander.expandPluginConfiguration(mavenProject.getModel(), request, problems);
 			if(mavenProject.getInjectedProfileIds().containsKey(Profile.SOURCE_POM)){

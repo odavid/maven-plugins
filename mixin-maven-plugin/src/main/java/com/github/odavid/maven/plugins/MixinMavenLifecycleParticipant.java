@@ -9,6 +9,7 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.interpolation.ModelInterpolator;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.model.plugin.PluginConfigurationExpander;
+import org.apache.maven.model.plugin.ReportingConverter;
 import org.apache.maven.model.profile.ProfileInjector;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.project.MavenProject;
@@ -48,6 +49,9 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private MixinModelCache mixinModelCache;
     
+    @Requirement
+    private ReportingConverter reportingConverter;
+    
 	@Override
 	public void afterSessionStart(MavenSession session) throws MavenExecutionException {
 	}
@@ -60,7 +64,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		List<MavenProject> projects = mavenSession.getProjects();
 		for (MavenProject module : projects ) {
 			MixinsProjectLoader loader = new MixinsProjectLoader(mavenSession, module, 
-					modelInterpolator, pluginConfigurationExpander, beanConfigurator, logger, mixinModelCache, profileSelector, profileInjector, mixinModelMerger);
+					modelInterpolator, pluginConfigurationExpander, beanConfigurator, logger, mixinModelCache, profileSelector, profileInjector, mixinModelMerger, reportingConverter);
 			loader.mergeMixins();
 		}
 		mavenSession.setProjects(projects);
