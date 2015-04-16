@@ -8,6 +8,7 @@ public class Mixins {
 	private boolean mergePlugins = true;
 	private boolean mergePluginManagement = true;
 	private boolean mergeProperties = true;
+	private boolean mergeDistributionManagement = true;
 	private boolean recurse = true;
 	private boolean activateProfiles = true;
 	private String defaultMixinType = "pom";
@@ -37,6 +38,10 @@ public class Mixins {
 	public void setMergeProperties(boolean mergeProperties) {
 		this.mergeProperties = mergeProperties;
 	}
+
+	public void setMergeDistributionManagement(boolean mergeDistributionManagement) {
+		this.mergeDistributionManagement = mergeDistributionManagement;
+	}
 	
 	public void setRecurse(boolean recurse){
 		this.recurse = recurse;
@@ -56,6 +61,10 @@ public class Mixins {
 
 	public boolean isMergeProperties() {
 		return mergeProperties;
+	}
+
+	public boolean isMergeDistributionManagement() {
+		return mergeDistributionManagement;
 	}
 	public boolean isRecurse() {
 		return recurse;

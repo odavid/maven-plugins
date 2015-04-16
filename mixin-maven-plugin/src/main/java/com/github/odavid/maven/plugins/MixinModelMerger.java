@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.model.Build;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginContainer;
@@ -57,6 +58,16 @@ public class MixinModelMerger extends MavenModelMerger {
 		Map<Object, Object> context = new HashMap<Object, Object>();
 		if(source.getProperties() != null){
 			super.mergeModelBase_Properties(target, source, false, context);
+		}
+	}
+	
+	public void mergeDistributionManagement(Model target, Model source){
+		Map<Object, Object> context = new HashMap<Object, Object>();
+		if (source.getDistributionManagement() != null){
+			if(target.getDistributionManagement() == null){
+				target.setDistributionManagement(new DistributionManagement());
+			}
+			super.mergeDistributionManagement(target.getDistributionManagement(), source.getDistributionManagement(), false, context);
 		}
 	}
 
