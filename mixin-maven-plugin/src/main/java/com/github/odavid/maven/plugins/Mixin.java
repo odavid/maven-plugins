@@ -15,6 +15,7 @@ public class Mixin {
 	private Boolean mergePlugins;
 	private Boolean mergeReporting;
 	private Boolean mergeProperties;
+	private Boolean mergeDistributionManagement;
 	private Boolean recurse;
 	private Boolean activateProfiles;
 	private Mixins mixins;
@@ -74,6 +75,9 @@ public class Mixin {
 	public boolean isMergeProperties() {
 		return mergeProperties != null ? mergeProperties : mixins.isMergeProperties();
 	}
+	public boolean isMergeDistributionManagement() {
+		return mergeDistributionManagement != null ? mergeDistributionManagement : mixins.isMergeDistributionManagement();
+	}
 	public boolean isRecurse(){
 		return recurse != null ? recurse : mixins.isRecurse();
 	}
@@ -107,6 +111,9 @@ public class Mixin {
 		}
 		if(isMergeReporting()){
 			mixinModelMerger.mergeReporting(mavenProject.getModel(), mixinModel);
+		}
+		if(isMergeDistributionManagement()){
+			mixinModelMerger.mergeDistributionManagement(mavenProject.getModel(), mixinModel);
 		}
 	}
 	
