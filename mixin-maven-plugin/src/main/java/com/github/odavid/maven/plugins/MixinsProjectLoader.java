@@ -132,7 +132,7 @@ public class MixinsProjectLoader {
         	if(mavenProject.getDistributionManagement().getSnapshotRepository() != null){
         		mavenProject.setSnapshotArtifactRepository(createRepo(mavenProject.getDistributionManagement().getSnapshotRepository()));
         	}
-        	if(mavenProject.getDistributionManagement().getSnapshotRepository() != null){
+        	if(mavenProject.getDistributionManagement().getRepository() != null){
         		mavenProject.setReleaseArtifactRepository(createRepo(mavenProject.getDistributionManagement().getRepository()));
         	}
         }
@@ -145,7 +145,7 @@ public class MixinsProjectLoader {
             repositorySystem.injectAuthentication( mavenSession.getRepositorySession(), Arrays.asList( repo ) );
             return repo;
         } catch ( InvalidRepositoryException e ) {
-            throw new IllegalStateException( "Failed to create snapshot distribution repository for " + mavenProject.getId(), e );
+            throw new IllegalStateException( "Failed to create distribution repository " + deploymentRepo.getId() + " for " + mavenProject.getId(), e );
         }
 		
 	}
