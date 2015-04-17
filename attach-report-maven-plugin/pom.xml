@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>com.github.odavid</groupId>
 		<artifactId>plugins-parent</artifactId>
-		<version>0.1-alpha-35</version>
+		<version>0.1-alpha-36-SNAPSHOT</version>
 	</parent>
 	<groupId>com.github.odavid.maven.plugins</groupId>
 	<artifactId>attach-report-maven-plugin</artifactId>
