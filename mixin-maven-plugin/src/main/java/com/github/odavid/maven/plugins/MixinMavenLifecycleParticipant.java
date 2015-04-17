@@ -13,6 +13,7 @@ import org.apache.maven.model.plugin.ReportingConverter;
 import org.apache.maven.model.profile.ProfileInjector;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.codehaus.plexus.logging.Logger;
@@ -52,6 +53,9 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
     @Requirement
     private ReportingConverter reportingConverter;
     
+    @Requirement
+    private RepositorySystem repositorySystem;
+    
 	@Override
 	public void afterSessionStart(MavenSession session) throws MavenExecutionException {
 	}
@@ -64,7 +68,7 @@ public class MixinMavenLifecycleParticipant extends AbstractMavenLifecyclePartic
 		List<MavenProject> projects = mavenSession.getProjects();
 		for (MavenProject module : projects ) {
 			MixinsProjectLoader loader = new MixinsProjectLoader(mavenSession, module, 
-					modelInterpolator, pluginConfigurationExpander, beanConfigurator, logger, mixinModelCache, profileSelector, profileInjector, mixinModelMerger, reportingConverter);
+					modelInterpolator, pluginConfigurationExpander, beanConfigurator, logger, mixinModelCache, profileSelector, profileInjector, mixinModelMerger, reportingConverter, repositorySystem);
 			loader.mergeMixins();
 		}
 		mavenSession.setProjects(projects);

@@ -1,6 +1,7 @@
 package com.github.odavid.maven.plugins;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -9,12 +10,15 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.maven.MavenExecutionException;
+import org.apache.maven.artifact.InvalidRepositoryException;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.configuration.BeanConfigurationException;
 import org.apache.maven.configuration.BeanConfigurationRequest;
 import org.apache.maven.configuration.BeanConfigurator;
 import org.apache.maven.configuration.DefaultBeanConfigurationRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
+import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Profile;
@@ -28,6 +32,7 @@ import org.apache.maven.model.profile.ProfileInjector;
 import org.apache.maven.model.profile.ProfileSelector;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
+import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.logging.Logger;
 
 public class MixinsProjectLoader {
@@ -43,6 +48,7 @@ public class MixinsProjectLoader {
     private PluginConfigurationExpander pluginConfigurationExpander;
 	private BeanConfigurator beanConfigurator;
 	private ReportingConverter reportingConverter;
+	private RepositorySystem repositorySystem;
 
     private DefaultModelBuildingRequest modelBuildingRequest = new DefaultModelBuildingRequest();
     private MixinModelCache mixinModelCache;
@@ -52,7 +58,7 @@ public class MixinsProjectLoader {
 			PluginConfigurationExpander pluginConfigurationExpander, 
 			BeanConfigurator beanConfigurator, Logger logger, 
 			MixinModelCache mixinModelCache, ProfileSelector profileSelector, ProfileInjector profileInjector, 
-			MixinModelMerger mixinModelMerger, ReportingConverter reportingConverter){
+			MixinModelMerger mixinModelMerger, ReportingConverter reportingConverter, RepositorySystem repositorySystem){
 		this.mavenSession = mavenSession;
 		this.mavenProject = mavenProject;
 		this.modelInterpolator = modelInterpolator;
@@ -64,6 +70,7 @@ public class MixinsProjectLoader {
 		this.profileInjector = profileInjector;
 		this.mixinModelMerger = mixinModelMerger;
 		this.reportingConverter = reportingConverter;
+		this.repositorySystem = repositorySystem;
 		
 		ProjectBuildingRequest projectBuildingRequest = mavenSession.getProjectBuildingRequest();
 		modelBuildingRequest.setActiveProfileIds(projectBuildingRequest.getActiveProfileIds());
@@ -111,9 +118,38 @@ public class MixinsProjectLoader {
 				mavenProject.getInjectedProfileIds().put(Profile.SOURCE_POM, new ArrayList<String>(mixinProfiles));
 			}
 			problems.checkErrors(mavenProject.getFile());
+
+			setupMaven33DistributionManagement(mavenProject);
 		}
 	}
 	
+	/** 
+	 * Maven &gt; 3.3 changed the way distributionManagement is being built. It is now being initialized during the projectbuilder phase, 
+	 * and therefore if a mixin is adding distributionManagement, we need to setup again
+	 */
+	private void setupMaven33DistributionManagement(MavenProject mavenProject) {
+        if ( mavenProject.getDistributionManagementArtifactRepository() == null && mavenProject.getDistributionManagement() != null){
+        	if(mavenProject.getDistributionManagement().getSnapshotRepository() != null){
+        		mavenProject.setSnapshotArtifactRepository(createRepo(mavenProject.getDistributionManagement().getSnapshotRepository()));
+        	}
+        	if(mavenProject.getDistributionManagement().getSnapshotRepository() != null){
+        		mavenProject.setReleaseArtifactRepository(createRepo(mavenProject.getDistributionManagement().getRepository()));
+        	}
+        }
+	}
+	
+	private ArtifactRepository createRepo(DeploymentRepository deploymentRepo){
+        try{
+            ArtifactRepository repo = repositorySystem.buildArtifactRepository( deploymentRepo );
+            repositorySystem.injectProxy( mavenSession.getRepositorySession(), Arrays.asList( repo ) );
+            repositorySystem.injectAuthentication( mavenSession.getRepositorySession(), Arrays.asList( repo ) );
+            return repo;
+        } catch ( InvalidRepositoryException e ) {
+            throw new IllegalStateException( "Failed to create snapshot distribution repository for " + mavenProject.getId(), e );
+        }
+		
+	}
+
 	private void fillMixins(List<Mixin> mixinList, Map<String,Mixin> mixinMap, Model model) throws MavenExecutionException {
 		//Merge properties of current Project with mixin for interpolateModel to work correctly 
 		model = model.clone();
