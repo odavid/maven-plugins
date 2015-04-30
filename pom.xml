@@ -20,9 +20,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<version.org.codehaus.groovy>2.1.8</version.org.codehaus.groovy>
-		<version.groovy-eclipse-compiler>2.9.1-01</version.groovy-eclipse-compiler>
-		<version.groovy-eclipse-batch>2.1.8-01</version.groovy-eclipse-batch>
+		<version.org.codehaus.groovy>2.4.3</version.org.codehaus.groovy>
+		<version.groovy-eclipse-compiler>2.9.2-01</version.groovy-eclipse-compiler>
+		<version.groovy-eclipse-batch>2.4.3-01</version.groovy-eclipse-batch>
 		<version.gmaven>1.5</version.gmaven>
 	</properties>
 
@@ -174,7 +174,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.3</version>
 				</plugin>
 				<plugin>
 					<artifactId>maven-clean-plugin</artifactId>
