@@ -1,14 +1,22 @@
 package org.codehaus.plexus.component.factory.ant;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DefaultLogger;
-import org.apache.tools.ant.DemuxInputStream;
-import org.apache.tools.ant.DemuxOutputStream;
 import org.apache.tools.ant.Main;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
-import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.MapOrientedComponent;
 import org.codehaus.plexus.component.configurator.ComponentConfigurationException;
 import org.codehaus.plexus.component.factory.ComponentInstantiationException;
@@ -21,17 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.github.odavid.maven.ant.logger.MavenAntLogger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
 public class AntScriptInvoker
     extends AbstractLogEnabled
     implements MapOrientedComponent
@@ -43,7 +40,7 @@ public class AntScriptInvoker
 
     private final ComponentDescriptor descriptor;
 
-    private final File script;
+    private File script;
 
     private final String scriptResource;
 
@@ -58,54 +55,66 @@ public class AntScriptInvoker
     private File basedir;
 
     private String messageLevel;
+    
+    private final ClassLoader invokerClassLoader;
+    private final String resourceName;
 
     public AntScriptInvoker( ComponentDescriptor descriptor, ClassLoader loader)
         throws IOException, ComponentInstantiationException
     {
+    	this.invokerClassLoader = loader;
         this.descriptor = descriptor;
 
         String impl = descriptor.getImplementation();
-
+        
         int colon = impl.indexOf( ":" );
 
-        String resourceName;
-        if ( colon > -1 )
-        {
-            resourceName = impl.substring( 0, colon );
-            target = impl.substring( colon + 1 );
+        if ( colon > -1 ){
+            this.resourceName = impl.substring( 0, colon );
+            this.target = impl.substring( colon + 1 );
         }
-        else
-        {
-            resourceName = impl;
+        else{
+        	this.resourceName = impl;
         }
 
         scriptResource = resourceName;
+    }
 
-        InputStream input = null;
+	private void writeAntTempBuildScriptToDisk(File outDir) throws ComponentInstantiationException, IOException, FileNotFoundException {
+		InputStream input = null;
         OutputStream output = null;
-
-        try
-        {
-            input = loader.getResourceAsStream( resourceName );
+        try{
+            input = invokerClassLoader.getResourceAsStream( resourceName );
             
             if ( input == null )
             {
-                throw new ComponentInstantiationException( "Cannot find Ant script resource: '" + resourceName + "' in classpath of: " + loader );
+                throw new ComponentInstantiationException( "Cannot find Ant script resource: '" + resourceName + "' in classpath of: " + invokerClassLoader);
             }
 
-            script = File.createTempFile( "plexus-ant-component", ".build.xml" );
-            script.deleteOnExit();
+            if(outDir != null){
+            	if(!outDir.isFile() && !outDir.exists()){
+            		outDir.mkdirs();
+            	}
+            	//Keeping backward compatible - if cannot create output dir or is not a directory, keep working as before using temp file
+            	if(!outDir.isDirectory()){
+            		outDir = null;
+            	}else{
+            		script = new File(outDir, resourceName);
+            	}
+            }
+            if(outDir == null){
+	            script = File.createTempFile( "plexus-ant-component", ".build.xml" );
+            }
 
             output = new FileOutputStream( script );
+            script.deleteOnExit();
 
             IOUtil.copy( input, output );
-        }
-        finally
-        {
+        }finally{
             IOUtil.close( input );
             IOUtil.close( output );
         }
-    }
+	}
 
     public static String[] getImplicitRequiredParameters()
     {
@@ -178,7 +187,11 @@ public class AntScriptInvoker
         // This is a little brittle as we're relying on a call for configuration
         // to signal ant project initialization ... jvz.
         // ----------------------------------------------------------------------------
-
+    	try {
+			writeAntTempBuildScriptToDisk(basedir != null ? new File(basedir, "target/.ant-mojo"): null);
+		} catch (ComponentInstantiationException | IOException e) {
+			throw new ComponentConfigurationException("Cannot write Ant Temporary file to disk", e);
+		}
         initializeProject();
     }
 
@@ -266,22 +279,6 @@ public class AntScriptInvoker
         project.init();
         project.setUserProperty( "ant.version", Main.getAntVersion() );
         project.setProperty( "ant.file", script.toString() );
-
-//        DefaultLogger antLogger = new DefaultLogger();
-//        antLogger.setOutputPrintStream( System.out );
-//        antLogger.setErrorPrintStream( System.err );
-//
-//        int level = convertMsgLevel( messageLevel );
-//
-//        Logger logger = getLogger();
-//        if ( logger != null )
-//        {
-//            logger.debug( "Ant message level is set to: " + messageLevel + "(" + level + ")" );
-//        }
-//
-//        antLogger.setMessageOutputLevel( level );
-//
-//        project.addBuildListener( antLogger );
 
         project.setBaseDir( basedir );
         
