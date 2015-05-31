@@ -13,6 +13,7 @@ public class Mixins {
 	private boolean recurse = true;
 	private boolean activateProfiles = true;
 	private String defaultMixinType = "pom";
+	private boolean mergeScm = true;
 
 	public String getDefaultMixinType() {
 		return defaultMixinType;
@@ -79,6 +80,13 @@ public class Mixins {
 	public void setMergeReporting(boolean mergeReporting) {
 		this.mergeReporting = mergeReporting;
 	}
-	
-	
+
+
+	public boolean isMergeScm() {
+		return mergeScm;
+	}
+
+	public void setMergeScm(boolean mergeScm) {
+		this.mergeScm = mergeScm;
+	}
 }

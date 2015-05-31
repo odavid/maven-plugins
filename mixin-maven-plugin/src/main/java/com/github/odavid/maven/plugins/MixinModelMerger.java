@@ -170,4 +170,9 @@ public class MixinModelMerger extends MavenModelMerger {
 			}
 		}
 	}
+
+	public void mergeScm(Model model, Model mixinModel) {
+		Map<Object, Object> context = new HashMap<Object, Object>();
+		super.mergeModel_Scm(model, mixinModel, false, context);
+	}
 }
