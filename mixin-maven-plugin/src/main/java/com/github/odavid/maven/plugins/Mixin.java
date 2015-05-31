@@ -129,4 +129,7 @@ public class Mixin {
 		return getKey();
 	}
 
+	public void setMergeScm(Boolean mergeScm) {
+		this.mergeScm = mergeScm;
+	}
 }
