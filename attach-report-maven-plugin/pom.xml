@@ -49,7 +49,7 @@
 			<artifactId>commons-io</artifactId>
 		</dependency>
 	</dependencies>
-
+<!--
 	<profiles>
 		<profile>
 			<id>run-its</id>
@@ -89,5 +89,5 @@
 			</build>
 		</profile>
 	</profiles>
-
+-->
 </project>
