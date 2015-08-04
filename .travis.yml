@@ -2,4 +2,4 @@ language: java
 install: true
 jdk:
     - oraclejdk7
-script: mvn clean install -Prun-its
+script: mvn clean install 
