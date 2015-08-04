@@ -5,4 +5,4 @@ jdk:
     - oraclejdk7
 before_script: sudo rm /etc/mavenrc
 script: mvn clean install -Prun-its
-after_failure: cat /home/travis/build/odavid/maven-plugins/attach-report-maven-plugin/target/it/simple-it/build.log	 
+after_failure: find . -name build.log | xargs cat
