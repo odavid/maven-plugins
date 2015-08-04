@@ -3,4 +3,4 @@ install: true
 jdk:
     - oraclejdk7
 script: mvn clean install -Prun-its
-after_failure: find . -name 'build.log' -exec cat {} \;
+after_failure: find . -name 'build.log' | xargs cat 
