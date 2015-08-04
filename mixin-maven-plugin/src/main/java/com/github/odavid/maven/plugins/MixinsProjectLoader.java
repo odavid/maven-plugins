@@ -18,9 +18,13 @@ import org.apache.maven.configuration.BeanConfigurator;
 import org.apache.maven.configuration.DefaultBeanConfigurationRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Build;
+import org.apache.maven.model.ConfigurationContainer;
 import org.apache.maven.model.DeploymentRepository;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginContainer;
+import org.apache.maven.model.PluginExecution;
+import org.apache.maven.model.PluginManagement;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.building.DefaultModelBuildingRequest;
 import org.apache.maven.model.building.ModelBuildingRequest;
@@ -30,10 +34,12 @@ import org.apache.maven.model.plugin.ReportingConverter;
 import org.apache.maven.model.profile.DefaultProfileActivationContext;
 import org.apache.maven.model.profile.ProfileInjector;
 import org.apache.maven.model.profile.ProfileSelector;
+import org.apache.maven.plugin.lifecycle.Execution;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingRequest;
 import org.apache.maven.repository.RepositorySystem;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 public class MixinsProjectLoader {
 	public static final String PLUGIN_GROUPID = "com.github.odavid.maven.plugins";
@@ -102,9 +108,19 @@ public class MixinsProjectLoader {
 					mixinProfiles.add(profile.getId());
 				}
 			}
-			//Need to convert old style reporting before merging the mixin, so the site plugin will be merged correctly
-			reportingConverter.convertReporting(mixinModel, request, problems);
+			// https://issues.apache.org/jira/browse/MSITE-484
+			// The merging of reportPlugins is problematice today. The reportingConverter adds reportPlugins to the site configuration, but they are not
+			// merged as plugins, and therefore create issues of mixture between reports.
+			// The workaround for that is to remove all reportPlugins if the user defined reporting section in the original pom. After the mixin will be merged. 
+			boolean hasReporting = mavenProject.getModel().getReporting() != null; 
+			if(hasReporting){
+				removeSitePluginReportPlugins(mavenProject.getModel());
+			}
 			mixin.merge(mixinModel, mavenProject, mavenSession, mixinModelMerger);
+			if(hasReporting){
+				//Need to convert old style reporting before merging the mixin, so the site plugin will be merged correctly
+				reportingConverter.convertReporting(mavenProject.getModel(), request, problems);
+			}
 		}
 		if(mixinList.size() > 0){
 			//Apply the pluginManagement section on the plugins section
@@ -123,6 +139,43 @@ public class MixinsProjectLoader {
 		}
 	}
 	
+	private void removeSitePluginReportPlugins(Model model) {
+		cleanSitePluginFromReportPlugins(model.getBuild().getPluginManagement());
+		cleanSitePluginFromReportPlugins(model.getBuild());
+	}
+
+	private Plugin cleanSitePluginFromReportPlugins(PluginContainer pluginContainer) {
+		if(pluginContainer == null){
+			return null;
+		}
+		Plugin sitePlugin = null;
+		for(Plugin plugin: pluginContainer.getPlugins()){
+			if("maven-site-plugin".equals( plugin.getArtifactId() ) && "org.apache.maven.plugins".equals( plugin.getGroupId() )){
+				sitePlugin = plugin;
+				break;
+			}
+		}
+		cleanReportPluginsFromConfiguration(sitePlugin);
+		if(sitePlugin != null){
+			for(PluginExecution pluginExecution: sitePlugin.getExecutions()){
+				cleanReportPluginsFromConfiguration(pluginExecution);
+			}
+		}
+		return sitePlugin;
+	}
+	void cleanReportPluginsFromConfiguration(ConfigurationContainer configurationContainer){
+		if(configurationContainer == null) return;
+		if(configurationContainer.getConfiguration() != null){
+			Xpp3Dom dom = (Xpp3Dom)configurationContainer.getConfiguration();
+            for ( int i = dom.getChildCount() - 1; i >= 0; i-- ){
+                Xpp3Dom child = dom.getChild( i );
+                if ( "reportPlugins".equals( child.getName() ) ){
+                    dom.removeChild( i );
+                }
+            }
+		}
+	}
+
 	/** 
 	 * Maven &gt; 3.3 changed the way distributionManagement is being built. It is now being initialized during the projectbuilder phase, 
 	 * and therefore if a mixin is adding distributionManagement, we need to setup again
