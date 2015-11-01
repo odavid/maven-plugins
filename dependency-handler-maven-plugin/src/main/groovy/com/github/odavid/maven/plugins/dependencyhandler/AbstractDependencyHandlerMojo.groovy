@@ -98,7 +98,7 @@ abstract class AbstractDependencyHandlerMojo extends GroovyMojoWithAntLogger{
 			def artifactMap = [
 				'artifactId': it.artifactId,
 				'groupId': it.groupId,
-				'version': it.version,
+				'version': it.baseVersion,
 				'type': it.type,
 				'classifier': it.classifier ?: "",
 				'dashClassifier': it.classifier? "-${it.classifier}" : ""]
