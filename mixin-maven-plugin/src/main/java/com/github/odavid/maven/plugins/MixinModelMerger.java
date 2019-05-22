@@ -1,21 +1,12 @@
 package com.github.odavid.maven.plugins;
 
+import org.apache.maven.model.*;
+import org.apache.maven.model.merge.MavenModelMerger;
+import org.codehaus.plexus.component.annotations.Component;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.maven.model.Build;
-import org.apache.maven.model.DistributionManagement;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.model.PluginContainer;
-import org.apache.maven.model.PluginExecution;
-import org.apache.maven.model.PluginManagement;
-import org.apache.maven.model.ReportPlugin;
-import org.apache.maven.model.ReportSet;
-import org.apache.maven.model.Reporting;
-import org.apache.maven.model.merge.MavenModelMerger;
-import org.codehaus.plexus.component.annotations.Component;
 
 /**
  * MixinModelMerger 
@@ -175,4 +166,15 @@ public class MixinModelMerger extends MavenModelMerger {
 		Map<Object, Object> context = new HashMap<Object, Object>();
 		super.mergeModel_Scm(targetModel, sourceModel, false, context);
 	}
+
+	public void mergeRepositories(Model targetModel, Model sourceModel) {
+		Map<Object, Object> context = new HashMap<Object, Object>();
+		super.mergeModelBase_Repositories(targetModel, sourceModel, false, context);
+	}
+
+	public void mergePluginRepositories(Model targetModel, Model sourceModel) {
+		Map<Object, Object> context = new HashMap<Object, Object>();
+		super.mergeModelBase_PluginRepositories(targetModel, sourceModel, false, context);
+	}
+
 }
