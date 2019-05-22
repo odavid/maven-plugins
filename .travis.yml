@@ -2,7 +2,7 @@ sudo: required
 language: java
 install: true
 jdk:
-    - oraclejdk7
-before_script: sudo rm /etc/mavenrc
+    - oraclejdk8
+before_script: sudo rm -f /etc/mavenrc
 script: mvn clean install -Prun-its
 after_failure: find . -name build.log | xargs cat
