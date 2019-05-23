@@ -4,5 +4,5 @@ install: true
 jdk:
     - oraclejdk8
 before_script: sudo rm -f /etc/mavenrc
-script: mvn clean install -Prun-its
+script: ./mvnw clean install -Prun-its
 after_failure: find . -name build.log | xargs cat
