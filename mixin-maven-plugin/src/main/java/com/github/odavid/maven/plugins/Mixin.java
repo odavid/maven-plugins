@@ -17,6 +17,8 @@ public class Mixin {
 	private Boolean mergeProperties;
 	private Boolean mergeDistributionManagement;
 	private Boolean mergeScm;
+	private Boolean mergeRepositories;
+	private Boolean mergePluginRepositories;
 	private Boolean recurse;
 	private Boolean activateProfiles;
 	private Mixins mixins;
@@ -82,6 +84,15 @@ public class Mixin {
 	public boolean isMergeScm() {
 		return mergeScm != null ? mergeScm : mixins.isMergeScm();
 	}
+
+	private boolean isMergeRepositories() {
+		return mergeRepositories != null ? mergeRepositories : mixins.isMergeRepositories();
+	}
+
+	public boolean isMergePluginRepositories() {
+		return mergePluginRepositories != null ? mergePluginRepositories : mixins.isMergePluginRepositories();
+	}
+
 	public boolean isRecurse(){
 		return recurse != null ? recurse : mixins.isRecurse();
 	}
@@ -122,8 +133,14 @@ public class Mixin {
 		if(isMergeScm()){
 			mixinModelMerger.mergeScm(mavenProject.getModel(), mixinModel);
 		}
+		if(isMergeRepositories()) {
+			mixinModelMerger.mergeRepositories(mavenProject.getModel(), mixinModel);
+		}
+		if(isMergePluginRepositories()) {
+			mixinModelMerger.mergePluginRepositories(mavenProject.getModel(), mixinModel);
+		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return getKey();
@@ -132,4 +149,13 @@ public class Mixin {
 	public void setMergeScm(Boolean mergeScm) {
 		this.mergeScm = mergeScm;
 	}
+
+	public void setMergeRepositories(Boolean mergeRepositories) {
+		this.mergeRepositories = mergeRepositories;
+	}
+
+	public void setMergePluginRepositories(Boolean mergePluginRepositories) {
+		this.mergePluginRepositories = mergePluginRepositories;
+	}
+
 }

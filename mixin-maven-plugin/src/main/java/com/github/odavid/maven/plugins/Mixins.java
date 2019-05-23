@@ -14,6 +14,8 @@ public class Mixins {
 	private boolean activateProfiles = true;
 	private String defaultMixinType = "pom";
 	private boolean mergeScm = true;
+	private boolean mergeRepositories = true;
+	private boolean mergePluginRepositories = true;
 
 	public String getDefaultMixinType() {
 		return defaultMixinType;
@@ -89,4 +91,21 @@ public class Mixins {
 	public void setMergeScm(boolean mergeScm) {
 		this.mergeScm = mergeScm;
 	}
+
+	public boolean isMergeRepositories() {
+		return mergeRepositories;
+	}
+
+	public void setMergeRepositories(boolean mergeRepositories) {
+		this.mergeRepositories = mergeRepositories;
+	}
+
+	public boolean isMergePluginRepositories() {
+		return mergePluginRepositories;
+	}
+
+	public void setMergePluginRepositories(boolean mergePluginRepositories) {
+		this.mergePluginRepositories = mergePluginRepositories;
+	}
+
 }
