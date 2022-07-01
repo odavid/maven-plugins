@@ -15,7 +15,7 @@
 		<ant.contrib.version>1.0b3</ant.contrib.version>
 		<maven-script-ant.version>2.2.1</maven-script-ant.version>
 		<maven-plugin-tools.version>3.2</maven-plugin-tools.version>
-		<version.plexus-utils>3.0.9</version.plexus-utils>
+		<version.plexus-utils>3.0.16</version.plexus-utils>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
